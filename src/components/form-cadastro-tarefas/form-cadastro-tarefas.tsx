@@ -39,11 +39,11 @@ export default function FormCadastroTarefas() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-purple-50">
+        <div className="flex flex-col items-center justify-center bg-white">
             <form
                 className="bg-white p-8 rounded-xl shadow-md w-full max-w-md flex flex-col gap-4"
             >
-                <h1 className="text-2xl font-bold mb-4 text-center text-purple-700">
+                <h1 className="text-2xl font-bold mb-4 text-center text-blue-700">
                     Criar Tarefa
                 </h1>
                 <input
@@ -51,14 +51,14 @@ export default function FormCadastroTarefas() {
                     onChange={(e) => setNome(e.target.value)}
                     type="text"
                     required
-                    className="border border-purple-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    className="border border-blue-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     placeholder='Nome da tarefa'
                 />
 
                 <select
                     value={urgencia}
                     onChange={(e) => setUrgencia(e.target.value)}
-                    className="border border-purple-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    className="border border-blue-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                 >
                     <option value="">Classificação de urgência</option>
@@ -70,7 +70,7 @@ export default function FormCadastroTarefas() {
                 <select
                     value={grupo}
                     onChange={(e) => setGrupo(e.target.value)}
-                    className="border border-purple-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    className="border border-blue-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                 >
                     <option value="">Grupo de tarefas</option>
@@ -83,14 +83,14 @@ export default function FormCadastroTarefas() {
                     type="date"
                     value={data}
                     onChange={(e) => setData(e.target.value)}
-                    className="border border-purple-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    className="border border-blue-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                     min={new Date().toISOString().split('T')[0]}
                 />
 
                 <button
                     type="button"
-                    className="bg-purple-600 text-white p-2 rounded hover:bg-purple-700 transition"
+                    className=" text-white p-2 rounded bg-blue-600 hover:bg-blue-700 transition"
                     onClick={(e) => { e.preventDefault(); handleSubmit(e);}}
                 >
                     Criar Tarefa
