@@ -43,17 +43,19 @@ export default function FormCadastroTarefas() {
                     value={urgencia}
                     onChange={(e) => setUrgencia(e.target.value)}
                     className="border border-purple-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    required
                 >
                     <option value="">Classificação de urgência</option>
-                    <option value="Alta">Alta</option>
-                    <option value="Média">Média</option>
                     <option value="Baixa">Baixa</option>
+                    <option value="Média">Média</option>
+                    <option value="Alta">Alta</option>
                 </select>
 
                 <select
                     value={grupo}
                     onChange={(e) => setGrupo(e.target.value)}
                     className="border border-purple-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    required
                 >
                     <option value="">Grupo de tarefas</option>
                     <option value="Diária">Diária</option>
@@ -66,6 +68,8 @@ export default function FormCadastroTarefas() {
                     value={data}
                     onChange={(e) => setData(e.target.value)}
                     className="border border-purple-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+                    required
+                    min={new Date().toISOString().split('T')[0]}
                 />
 
                 <button
