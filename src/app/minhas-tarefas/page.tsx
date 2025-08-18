@@ -24,7 +24,7 @@ export default function CadastrarTarefa() {
         <div className="flex flex-col min-h-screen">
             <Header />
             <main className="flex-1 w-full flex flex-col items-center justify-center p-30">
-                <section className="w-full flex flex-row gap-10">
+                <section className="w-full flex flex-row gap-10 flex-wrap">
                     {/* Daily */}
                     <section className="md:w-4/12 flex flex-col justify-start items-center bg-[#DCEAFB] rounded-lg p-10 gap-4">
                         <h1 className="font-semibold text-2xl text-[#4A4A4A]">Daily</h1>
