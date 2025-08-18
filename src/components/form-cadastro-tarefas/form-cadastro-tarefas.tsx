@@ -1,30 +1,46 @@
 // components/TaskForm.tsx
 'use client';
 import { useState } from 'react';
+import { useTaskStore, Task } from '../../../stores/tasks';
+import { useRouter } from 'next/navigation';
 
 export default function FormCadastroTarefas() {
     const [nome, setNome] = useState('');
     const [urgencia, setUrgencia] = useState('');
     const [grupo, setGrupo] = useState('');
     const [data, setData] = useState('');
+    const { tasks, addTask, removeTask } = useTaskStore();
+    const router = useRouter();
+
+    const changeRouter = (routerTo: string) => {
+        router.replace(routerTo);
+    }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!nome || !urgencia || !grupo || !data) {
-            alert('Preencha todos os campos!');
-            return;
+
+        if (!nome && !urgencia && !grupo && !data) return;
+
+        const objToCreate: Task = {
+            taskName: nome,
+            taskDate: data,
+            taskUrgency: urgencia,
+            taskClassification: grupo
         }
-        alert(`Tarefa criada:\nNome: ${nome}\nUrgência: ${urgencia}\nGrupo: ${grupo}\nData: ${data}`);
+
+        addTask(objToCreate);
+
         setNome('');
         setUrgencia('');
         setGrupo('');
         setData('');
+
+        changeRouter('/minhas-tarefas');
     };
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-purple-50">
             <form
-                onSubmit={handleSubmit}
                 className="bg-white p-8 rounded-xl shadow-md w-full max-w-md flex flex-col gap-4"
             >
                 <h1 className="text-2xl font-bold mb-4 text-center text-purple-700">
@@ -46,9 +62,9 @@ export default function FormCadastroTarefas() {
                     required
                 >
                     <option value="">Classificação de urgência</option>
-                    <option value="Baixa">Baixa</option>
-                    <option value="Média">Média</option>
-                    <option value="Alta">Alta</option>
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
                 </select>
 
                 <select
@@ -58,9 +74,9 @@ export default function FormCadastroTarefas() {
                     required
                 >
                     <option value="">Grupo de tarefas</option>
-                    <option value="Diária">Diária</option>
-                    <option value="Semanal">Semanal</option>
-                    <option value="Mensal">Mensal</option>
+                    <option value="Daily">Daily</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Monthly">Monthly</option>
                 </select>
 
                 <input
@@ -73,8 +89,9 @@ export default function FormCadastroTarefas() {
                 />
 
                 <button
-                    type="submit"
+                    type="button"
                     className="bg-purple-600 text-white p-2 rounded hover:bg-purple-700 transition"
+                    onClick={(e) => { e.preventDefault(); handleSubmit(e);}}
                 >
                     Criar Tarefa
                 </button>
