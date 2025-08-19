@@ -18,14 +18,23 @@ export default function FormCadastroTarefas() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
+        const dataHoje = new Date();
         if (!nome && !urgencia && !grupo && !data) return;
+
 
         const objToCreate: Task = {
             taskName: nome,
             taskDate: data,
             taskUrgency: urgencia,
             taskClassification: grupo
+        }
+
+        if(grupo === 'Weekly') {
+        
+        }else if(grupo === 'Monthly'){
+
+        }else{
+            
         }
 
         addTask(objToCreate);
@@ -35,11 +44,11 @@ export default function FormCadastroTarefas() {
         setGrupo('');
         setData('');
 
-        changeRouter('/minhas-tarefas');
+        //changeRouter('/minhas-tarefas');
     };
 
     return (
-        <div className="flex flex-col items-center justify-center bg-white">
+        <div className="flex-1 flex flex-col items-center justify-center bg-white">
             <form
                 className="bg-white p-8 rounded-xl shadow-md w-full max-w-md flex flex-col gap-4"
             >

@@ -115,7 +115,7 @@ export default function CadastrarTarefa() {
                             <select
                                 value={filterTask}
                                 onChange={(e) => setFilterTask(e.target.value)}
-                                className="border border-[#4A4A4A] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="w-full border border-[#4A4A4A] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 required
                             >
                                 <option value="All">All</option>
@@ -125,7 +125,7 @@ export default function CadastrarTarefa() {
                         </section>
                     </section>
                 </section>
-                <section className="w-full flex flex-row gap-10 flex-wrap">
+                <section className="w-full flex flex-row items-centr justify-between flex-wrap md:gap-0 gap-y-2.5">
                     {
                         optionsTOshow?.map((item, index) => (
                             <ContainerTask arrInfoTask={item.arr} title={item.title} key={index} />

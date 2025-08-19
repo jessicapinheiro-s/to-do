@@ -10,9 +10,9 @@ interface propsContainer {
 export default function ContainerTask(props: propsContainer) {
     const { arrInfoTask, title } = props;
     return (
-        <section className="w-full md:w-4/12 flex flex-col justify-start items-center rounded-lg gap-4">
+        <section className="w-full md:w-3/12 flex flex-col justify-start items-center rounded-lg gap-4">
             <h1 className="font-semibold text-2xl text-[#4A4A4A]">{title}</h1>
-            <section className="md:w-8/12 w-full flex flex-col justify-center items-center gap-5">
+            <section className="md:w-10/12 w-full flex flex-col justify-center items-center gap-5">
                 {arrInfoTask.map((task, index) => (
                     <div key={index} className="w-full h-full rounded-lg flex flex-row bg-white items-center justify-between border border-[#e0e0e0]">
                         <span
@@ -33,10 +33,10 @@ export default function ContainerTask(props: propsContainer) {
                             </div>
                             <div className="w-1/5 flex flex-col items-center justify-between">
                                 <div>
-                                    <IoCheckmarkDoneCircleOutline className="text-[#4A4A4A] text-[16px]" />
+                                    <IoCheckmarkDoneCircleOutline className="text-[#4A4A4A] text-[20px]" />
                                 </div>
                                 <div>
-                                    <MdDelete className="text-[#4A4A4A] text-[16px]" />
+                                    <MdDelete className="text-[#4A4A4A] text-[20px]" />
                                 </div>
                             </div>
                         </div>
