@@ -1,8 +1,9 @@
 import { IoCheckmarkDoneCircleOutline } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
+import { Task } from "../../../stores/tasks";
 
 interface propsContainer {
-    arrInfoTask: any[];
+    arrInfoTask: Task[];
     title: string;
 }
 
