@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import ContainerTask from "@/components/container-task/container-task";
 
 interface ObjParam {
-    arr: any[],
+    arr: Task[],
     title: string;
 }
 export default function CadastrarTarefa() {
