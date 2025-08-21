@@ -1,8 +1,10 @@
 // pages/auth.tsx
 'use client';
 
+import { authUser } from '@/app/login/actions';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+
 
 export default function AuthPage() {
     const [isLogin, setIsLogin] = useState(true);
@@ -10,23 +12,23 @@ export default function AuthPage() {
     const [password, setPassword] = useState('');
     const router = useRouter();
 
+    const userDataAuthProcess = async() => {
+        await authUser({type: isLogin ? 'login' : 'cadastro', email: email, password: password});
+    }   
+
+    const changeRouter = (routerTo: string) => {
+        router.replace(routerTo);
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        userDataAuthProcess();
 
-        if (isLogin) {
-            alert(`Tentando logar com: ${email}`);
-        } else {
-            alert(`Tentando cadastrar: ${email}`);
-        }
-        changeRouter('/cadastrar-tarefa');
-        
         setEmail('');
         setPassword('');
     };
 
-    const changeRouter = (routerTo: string) => {
-        router.replace(routerTo);
-    }
+
 
     return (
         <div className="w-full flex items-center justify-center bg-gray-100">

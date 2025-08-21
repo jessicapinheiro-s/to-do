@@ -21,12 +21,17 @@ export default function Header() {
                 <ul className="flex flex-row items-center gap-6">
                     <li>
                         <Link href="./minhas-tarefas" className="hover:text-blue-600 transition">
-                            Minhas tarefas
+                            My Tasks
                         </Link>
                     </li>
                     <li>
                         <Link href="./cadastrar-tarefa" className="hover:text-blue-600 transition">
-                            Cadastrar nova tarefa
+                            Create new Task
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="./minha-conta" className="hover:text-blue-600 transition">
+                            Account
                         </Link>
                     </li>
                 </ul>
@@ -47,8 +52,11 @@ export default function Header() {
                     }`}
             >
                 {/* Cabeçalho do Drawer */}
-                <div className="flex items-center justify-between px-6 py-5 border-b">
-                    <h2 className="font-bold text-lg">Menu</h2>
+                <div className="flex items-center justify-between px-6 py-5 border-b border-[#e0e0e0]">
+                    <div className="flex flex-row items-center gap-3">
+                        <SiTask className="text-blue-600 w-6 h-6" />
+                        <h1 className="font-bold text-2xl">TO DO</h1>
+                    </div>
                     <button onClick={() => setIsOpen(false)} aria-label="Fechar menu">
                         <FiX className="text-2xl" />
                     </button>
@@ -60,7 +68,7 @@ export default function Header() {
                         <li>
                             <Link
                                 href="./minhas-tarefas"
-                                className="hover:text-blue-600 transition"
+                                className="hover:text-blue-600 transition font-semibold "
                                 onClick={() => setIsOpen(false)}
                             >
                                 Minhas tarefas
@@ -69,10 +77,15 @@ export default function Header() {
                         <li>
                             <Link
                                 href="./cadastrar-tarefa"
-                                className="hover:text-blue-600 transition"
+                                className="hover:text-blue-600 transition font-semibold "
                                 onClick={() => setIsOpen(false)}
                             >
                                 Cadastrar nova tarefa
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href="./minha-conta" className="hover:text-blue-600 transition font-semibold ">
+                                Account
                             </Link>
                         </li>
                     </ul>

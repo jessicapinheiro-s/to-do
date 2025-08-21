@@ -129,17 +129,17 @@ export default function CadastrarTarefa() {
             <Header />
             <main className="flex-1 w-full h-full flex flex-col items-center justify-start p-10 md:p-20 gap-y-4">
                 <section className="w-full flex flex-row items-center justify-end">
-                    <section className="w-full md:w-4/12 flex flex-row items-center justify-between gap-2">
-                        <section className="w-full flex flex-row items-start justify-between gap-0.5">
+                    <section className="w-full md:w-4/12 flex flex-row items-center justify-between gap-4 flex-wrap">
+                        <section className="w-full flex flex-row items-start md:justify-between justify-end gap-2">
                             <span className=" flex flex-row items-center gap-2">
                                 <span className="w-2 h-2 rounded-[50%] bg-[#E53E3E]"></span>
                                 <span>High</span>
                             </span>
-                            <span className=" flex flex-row items-center gap-0.5">
+                            <span className=" flex flex-row items-center gap-2">
                                 <span className="w-2 h-2 rounded-[50%] bg-[#D69E2E]"></span>
                                 <span>Medium</span>
                             </span>
-                            <span className=" flex flex-row items-center gap-0.5">
+                            <span className=" flex flex-row items-center gap-2">
                                 <span className="w-2 h-2 rounded-[50%] bg-[#38A169] "></span>
                                 <span>Low</span>
                             </span>
@@ -148,7 +148,7 @@ export default function CadastrarTarefa() {
                             <select
                                 value={viewTask}
                                 onChange={(e) => setViewTask(e.target.value)}
-                                className="w-full border border-[#4A4A4A] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="w-full border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 required
                             >
                                 <option value="View">View</option>
@@ -161,7 +161,7 @@ export default function CadastrarTarefa() {
                             <select
                                 value={filterTask}
                                 onChange={(e) => setFilterTask(e.target.value)}
-                                className="w-full border border-[#4A4A4A] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="w-full border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                                 required
                             >
                                 <option value="All">All</option>
@@ -171,8 +171,9 @@ export default function CadastrarTarefa() {
                         </section>
                     </section>
                 </section>
-                <section className="w-full flex-1 flex flex-row items-center justify-between flex-wrap md:gap-0 gap-y-2.5" style={{
-                    alignItems: optionsTOshow?.length === 0 ? 'center' : 'flex-start'
+                <section className="w-full flex-1 flex flex-row flex-wrap gap-10" style={{
+                    alignItems: optionsTOshow?.length < 2 ? 'center' : 'flex-start',
+                    justifyContent: optionsTOshow?.length < 2 ? 'space-between' : 'justify-start'
                 }}>
                     {
                         optionsTOshow?.length !== 0 && (

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTaskStore, Task } from '../../../stores/tasks';
 import { useRouter } from 'next/navigation';
+import ModalNotificacao from '../modal/modal-notificacao';
 
 export default function FormCadastroTarefas() {
     const [nome, setNome] = useState('');
@@ -11,6 +12,7 @@ export default function FormCadastroTarefas() {
     const [data, setData] = useState('');
     const { tasks, addTask, removeTask } = useTaskStore();
     const router = useRouter();
+    const [openModalNotification, setOpenModalNotification] = useState<boolean>(false);
 
     const changeRouter = (routerTo: string) => {
         router.replace(routerTo);
@@ -69,33 +71,34 @@ export default function FormCadastroTarefas() {
         setGrupo('');
         setData('');
 
+        setOpenModalNotification(!openModalNotification)
         //changeRouter('/minhas-tarefas');
     };
 
     return (
-        <div className="flex-1 flex flex-col items-center justify-center bg-white">
+        <div className="flex-1 h-full flex flex-col items-center justify-center bg-white">
             <form
-                className="bg-white p-8 rounded-xl shadow-md w-full max-w-md flex flex-col gap-4"
+                className="bg-white p-8 rounded-xl md:shadow-md w-full max-w-md flex flex-col gap-4"
             >
                 <h1 className="text-2xl font-bold mb-4 text-center text-blue-700">
-                    Criar Tarefa
+                    Create Task
                 </h1>
                 <input
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
                     type="text"
                     required
-                    className="border border-blue-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    placeholder='Nome da tarefa'
+                    className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    placeholder='Task name'
                 />
 
                 <select
                     value={urgencia}
                     onChange={(e) => setUrgencia(e.target.value)}
-                    className="border border-blue-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                 >
-                    <option value="">Classificação de urgência</option>
+                    <option value="">Urgency classification</option>
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
                     <option value="High">High</option>
@@ -104,10 +107,10 @@ export default function FormCadastroTarefas() {
                 <select
                     value={grupo}
                     onChange={(e) => setGrupo(e.target.value)}
-                    className="border border-blue-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                 >
-                    <option value="">Grupo de tarefas</option>
+                    <option value="">Task group</option>
                     <option value="Daily">Daily</option>
                     <option value="Weekly">Weekly</option>
                     <option value="Monthly">Monthly</option>
@@ -117,7 +120,7 @@ export default function FormCadastroTarefas() {
                     type="date"
                     value={data}
                     onChange={(e) => setData(e.target.value)}
-                    className="border border-blue-300 rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                     min={new Date().toISOString().split('T')[0]}
                 />
@@ -127,9 +130,11 @@ export default function FormCadastroTarefas() {
                     className=" text-white p-2 rounded bg-blue-600 hover:bg-blue-700 transition"
                     onClick={(e) => { e.preventDefault(); handleSubmit(e); }}
                 >
-                    Criar Tarefa
+                    Create Task
                 </button>
+
             </form>
+            <ModalNotificacao title={'Task created sucessfully'} text={''} open={openModalNotification} onClose={() => setOpenModalNotification(false)}/>
         </div>
     );
 }

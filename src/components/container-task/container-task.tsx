@@ -20,17 +20,11 @@ export default function ContainerTask(props: propsContainer) {
     console.log('arrInfoTask', arrInfoTask);
 
     return (
-        <section className="w-full flex flex-col justify-start items-center rounded-lg gap-4 border border-zinc-600" style={{
-            width:
-            arrInfoTask.length === 3 ?
-            '25%' :
-            arrInfoTask.length === 2 ?
-            '45%' :
-            '100%'
-        }}>
-            <h1 className="font-semibold text-2xl text-[#4A4A4A]">{title}</h1>
-            <section className="md:w-10/12 w-full flex justify-center items-center gap-5 border border-amber-600" style={{
-                flexDirection: arrInfoTask.length === 1 ? 'row' : 'column'
+        <section className="w-full flex flex-col justify-start items-center rounded-lg gap-4  border border-[#e0e0e0] rounded-tl-lg rounded-tr-lg" >
+            <div className="w-full text-center border-b-1 border-[#e0e0e0] rounded-tl-lg rounded-tr-lg bg-[#e7e7e7]">
+                <h1 className="font-semibold text-2xl text-[#4A4A4A]">{title}</h1>
+            </div>
+            <section className="w-full flex  gap-5  flex-row flex-wrap items-center justify-start md:py-10 md:px-16 py-5 px-8" style={{
             }}>
                 {arrInfoTask.map((task, index) => (
                     <div key={index} className="w-2xs h-20 rounded-lg flex flex-row bg-white items-center justify-between border border-[#e0e0e0]">
