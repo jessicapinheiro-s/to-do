@@ -14,7 +14,7 @@ export default function CadastrarTarefa() {
     const { tasks, removeTask } = useTaskStore();
     const [filterTask, setFilterTask] = useState<string>('All');
     const [viewTask, setViewTask] = useState<string>('View');
-    const [optionsTOshow, setOptionsTOshow] = useState<ObjParam[]>();
+    const [optionsTOshow, setOptionsTOshow] = useState<ObjParam[]>([]);
 
     const mapingTasksInfo: Task[] = tasks.map(task => {
         return {
@@ -40,7 +40,7 @@ export default function CadastrarTarefa() {
                     arr: mapingTasksInfo.filter(task => task.taskClassification === 'Monthly'),
                     title: 'Monthly'
                 }
-            ];
+            ].filter(item => item.arr.length !== 0);
             setOptionsTOshow(tasksByCategory);
         } else if (filterTask === 'Completed') {
             tasksByCategory = [
@@ -56,8 +56,7 @@ export default function CadastrarTarefa() {
                     arr: mapingTasksInfo.filter(task => task.taskClassification === 'Monthly'),
                     title: 'Monthly'
                 }
-            ];
-            setOptionsTOshow(tasksByCategory);
+            ].filter(item => item.arr.length !== 0);
         } else {
             const valueFiltered = mapingTasksInfo.filter(item => new Date(item.taskDate).getTime() < new Date().getTime());
             tasksByCategory = [
@@ -73,19 +72,66 @@ export default function CadastrarTarefa() {
                     arr: valueFiltered.filter(task => task.taskClassification === 'Monthly'),
                     title: 'Monthly'
                 }
-            ];
+            ].filter(item => item.arr.length !== 0);
+
             setOptionsTOshow(tasksByCategory);
         }
     }, [filterTask]);
 
+    useEffect(() => {
+        let tasksByView: ObjParam[] = [];
+
+        if (viewTask === 'View') {
+            tasksByView = [
+                {
+                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Daily'),
+                    title: 'Daily'
+                },
+                {
+                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Weekly'),
+                    title: 'Weekly'
+                },
+                {
+                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Monthly'),
+                    title: 'Monthly'
+                }
+            ].filter(item => item.arr.length !== 0);
+            setOptionsTOshow(tasksByView);
+        } else if (viewTask === 'Daily') {
+            tasksByView = [
+                {
+                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Daily'),
+                    title: 'Daily'
+                }
+            ].filter(item => item.arr.length !== 0);
+            setOptionsTOshow(tasksByView);
+        } else if (viewTask === 'Monthly') {
+            tasksByView = [
+                {
+                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Monthly'),
+                    title: 'Monthly'
+                }
+            ].filter(item => item.arr.length !== 0);
+            setOptionsTOshow(tasksByView);
+        } else {
+            tasksByView = [
+                {
+                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Weekly'),
+                    title: 'Weekly'
+                }
+            ].filter(item => item.arr.length !== 0);
+            setOptionsTOshow(tasksByView);
+        }
+    }, [viewTask]);
+
     return (
         <div className="flex flex-col min-h-screen">
             <Header />
-            <main className="flex-1 w-full flex flex-col items-center justify-start p-10 md:p-20 gap-y-4">
+            <main className="flex-1 w-full h-full flex flex-col items-center justify-start p-10 md:p-20 gap-y-4">
                 <section className="w-full flex flex-row items-center justify-end">
                     <section className="w-full md:w-4/12 flex flex-row items-center justify-between gap-2">
-                        <section className="w-full flex flex-col items-start justify-start">
-                            <span className=" flex flex-row items-center gap-0.5">
+                        <section className="w-full flex flex-row items-start justify-between gap-0.5">
+                            <span className=" flex flex-row items-center gap-2">
                                 <span className="w-2 h-2 rounded-[50%] bg-[#E53E3E]"></span>
                                 <span>High</span>
                             </span>
@@ -106,9 +152,9 @@ export default function CadastrarTarefa() {
                                 required
                             >
                                 <option value="View">View</option>
-                                <option value="Day">Day</option>
-                                <option value="Week">Week</option>
-                                <option value="Month">Month</option>
+                                <option value="Daily">Daily</option>
+                                <option value="Weekly">Weekly</option>
+                                <option value="Monthly">Monthly</option>
                             </select>
                         </section>
                         <section className="w-full">
@@ -125,11 +171,22 @@ export default function CadastrarTarefa() {
                         </section>
                     </section>
                 </section>
-                <section className="w-full flex flex-row items-centr justify-between flex-wrap md:gap-0 gap-y-2.5">
+                <section className="w-full flex-1 flex flex-row items-center justify-between flex-wrap md:gap-0 gap-y-2.5" style={{
+                    alignItems: optionsTOshow?.length === 0 ? 'center' : 'flex-start'
+                }}>
                     {
-                        optionsTOshow?.map((item, index) => (
-                            <ContainerTask arrInfoTask={item.arr} title={item.title} key={index} />
-                        ))
+                        optionsTOshow?.length !== 0 && (
+                            optionsTOshow?.map((item, index) => (
+                                <ContainerTask arrInfoTask={item.arr} title={item.title} key={index} />
+                            ))
+                        )
+                    }
+                    {
+                        optionsTOshow?.length === 0 && (
+                            <section className="w-full  flex flex-col items-center justify-center">
+                                <span className="text-3xl">Você não tem nenhuma task cadastrada</span>
+                            </section>
+                        )
                     }
                 </section>
             </main>

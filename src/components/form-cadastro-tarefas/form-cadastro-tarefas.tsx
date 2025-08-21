@@ -18,26 +18,51 @@ export default function FormCadastroTarefas() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        const dataHoje = new Date();
         if (!nome && !urgencia && !grupo && !data) return;
 
+        const dateInQuestion = new Date(data);
+        dateInQuestion.setDate(dateInQuestion.getDate() + 1);
 
         const objToCreate: Task = {
             taskName: nome,
-            taskDate: data,
+            taskStatus: 'Ativo',
+            taskDate: new Date(dateInQuestion).toISOString().split("T")[0],
             taskUrgency: urgencia,
             taskClassification: grupo
         }
 
-        if(grupo === 'Weekly') {
-        
-        }else if(grupo === 'Monthly'){
+        if (grupo === 'Weekly') {
+            const dateParaCalcular = new Date(dateInQuestion);
+            const ultimoDia = new Date(dateParaCalcular.getFullYear() + 1, 0, 0).getTime();
 
-        }else{
-            
+            const diferencaHojeUltimoDia = Math.ceil((ultimoDia - dateInQuestion.getTime()) / (1000 * 60 * 60 * 24));
+            const semanasDisponiveis = Math.floor(diferencaHojeUltimoDia / 7);
+
+
+            for (let i = 0; i < semanasDisponiveis; i++) {
+                if (i !== 0) {
+                    dateInQuestion.setDate(dateInQuestion.getDate() + 7);
+                }
+                const dataAtualizada: Task = { ...objToCreate, taskDate: new Date(dateInQuestion).toISOString().split("T")[0] };
+
+                addTask(dataAtualizada);
+            }
+
+        } else if (grupo === 'Monthly') {
+            const mesAtual = dateInQuestion.getMonth();
+            const mesesFaltantes = 12 - mesAtual;
+
+            for (let i = 0; i < mesesFaltantes; i++) {
+                if (i !== 0) {
+                    dateInQuestion.setMonth(dateInQuestion.getMonth() + 1);
+                }
+
+                const dataAtualizada: Task = { ...objToCreate, taskDate: new Date(dateInQuestion).toISOString().split("T")[0] };
+                addTask(dataAtualizada);
+            }
+        } else {
+            addTask(objToCreate);
         }
-
-        addTask(objToCreate);
 
         setNome('');
         setUrgencia('');
@@ -100,7 +125,7 @@ export default function FormCadastroTarefas() {
                 <button
                     type="button"
                     className=" text-white p-2 rounded bg-blue-600 hover:bg-blue-700 transition"
-                    onClick={(e) => { e.preventDefault(); handleSubmit(e);}}
+                    onClick={(e) => { e.preventDefault(); handleSubmit(e); }}
                 >
                     Criar Tarefa
                 </button>

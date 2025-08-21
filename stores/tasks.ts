@@ -3,6 +3,8 @@ import { create } from 'zustand';
 export type Task = {
     taskName: string;
     taskDate: string;
+    taskStatus: string;
+    taskId?: number;
     taskUrgency: string;
     taskClassification: string;
 }
