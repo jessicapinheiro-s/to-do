@@ -10,10 +10,10 @@ interface propsContainer {
 export default function ContainerTask(props: propsContainer) {
     const { arrInfoTask, title } = props;
 
-    const deleteTask = (e: any) => {
+    const deleteTask = (e: React.MouseEvent<SVGElement>) => {
         console.log('Task to be deleted', e);
     }
-    const updateTask = (e: any) => {
+    const updateTask = (e: React.MouseEvent<SVGElement>) => {
         console.log('Task to be updated', e);
     }
 

@@ -54,7 +54,7 @@ export default function FormAccount({ user }: { user: User | null }) {
         getUserData();
     }, [user, getUserData])
 
-    const onEditUserPersonalInfo = (e: any) => {
+    const onEditUserPersonalInfo = () => {
         setOnEdit(!onEdit);
     }
 
@@ -82,7 +82,7 @@ export default function FormAccount({ user }: { user: User | null }) {
                         </div>
                     </div>
                     <div className="w-full flex flex-col items-end justify-end gap-4">
-                        <button className="px-4 py-2 md:px-8 md:py-3 text-white rounded bg-blue-600 hover:bg-blue-700 transition" onClick={(e) => onEditUserPersonalInfo(e)} type="button">
+                        <button className="px-4 py-2 md:px-8 md:py-3 text-white rounded bg-blue-600 hover:bg-blue-700 transition" onClick={(e) => onEditUserPersonalInfo} type="button">
                             <MdEdit className="text-[20px]" />
                         </button>
                         {
