@@ -13,9 +13,6 @@ export default function FormAccount({ user }: { user: User | null }) {
     const [userEmail, setUserEmail] = useState<string>();
     const [onEdit, setOnEdit] = useState<boolean>(false);
 
-
-    if (!user) return;
-
     const getUserData = useCallback(async () => {
         try {
             const { data, error, status } = await (supabase).from('profiles').select('full_name, username_website, avatar_url').eq('id', user?.id).single();
@@ -48,11 +45,12 @@ export default function FormAccount({ user }: { user: User | null }) {
         }
     }
 
-
-
     useEffect(() => {
         getUserData();
     }, [user, getUserData])
+
+
+    if (!user) return;
 
     const onEditUserPersonalInfo = () => {
         setOnEdit(!onEdit);
