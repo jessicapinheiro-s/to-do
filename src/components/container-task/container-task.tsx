@@ -17,7 +17,6 @@ export default function ContainerTask(props: propsContainer) {
         console.log('Task to be updated', e);
     }
 
-    console.log('arrInfoTask', arrInfoTask);
 
     return (
         <section className="w-full flex flex-col justify-start items-center rounded-lg gap-4  border border-[#e0e0e0] rounded-tl-lg rounded-tr-lg" >

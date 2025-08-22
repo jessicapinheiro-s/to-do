@@ -40,8 +40,6 @@ export default function FormAccount({ user }: { user: User | null }) {
 
         if (error) {
             console.error("Erro ao atualizar:", error.message);
-        } else {
-            console.log("Atualizado com sucesso:", data);
         }
     }
 
