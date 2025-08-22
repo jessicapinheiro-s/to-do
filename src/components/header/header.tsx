@@ -71,7 +71,7 @@ export default function Header() {
                                 className="hover:text-blue-600 transition font-semibold "
                                 onClick={() => setIsOpen(false)}
                             >
-                                Minhas tarefas
+                                My Tasks
                             </Link>
                         </li>
                         <li>
@@ -80,7 +80,7 @@ export default function Header() {
                                 className="hover:text-blue-600 transition font-semibold "
                                 onClick={() => setIsOpen(false)}
                             >
-                                Cadastrar nova tarefa
+                                Create new Task
                             </Link>
                         </li>
                         <li>

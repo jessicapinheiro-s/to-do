@@ -36,7 +36,7 @@ export default function AuthPage() {
 
     return (
         <div className="w-full flex items-center justify-center bg-gray-100">
-            <div className="w-full max-w-md p-8 bg-white rounded-lg md:shadow-md">
+            <div className="w-full max-w-md md:p-8 bg-white rounded-lg md:shadow-md">
                 <h1 className="text-2xl font-bold mb-6 text-center">
                     {isLogin ? 'Login' : 'Cadastro'}
                 </h1>

@@ -16,9 +16,10 @@ export default function ModalNotificacao(props: propsModalNotificacao) {
             onClose();
         }, 1500)
     }, [open]);
+
     return (
         open && (
-            <div className="w-1/6 absolute bottom-10 right-10 bg-white border border-[#e0e0e0] gap-4 flex flex-col rounded-lg py-4 px-8">
+            <div className="w-[311px] md:w-1/6 absolute bottom-10 md:right-10 right-[9%] bg-white border border-[#e0e0e0] gap-4 flex flex-col rounded-lg py-4 px-8">
                 <div className="text-center flex flex-row items-center justify-start gap-x-2.5">
                     <FaCheckCircle className="text-[16px] text-green-600"/>
                     <div>
