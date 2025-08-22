@@ -9,26 +9,27 @@ import { useState } from 'react';
 
 export default function AuthPage() {
     const [isLogin, setIsLogin] = useState(true);
+    const [authProcessInit, setAuthProcessInit] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
 
-    const userDataAuthProcess = async() => {
-        await authUser({type: isLogin ? 'login' : 'cadastro', email: email, password: password});
-    }   
+    const userDataAuthProcess = async () => {
+        await authUser({ type: isLogin ? 'login' : 'cadastro', email: email, password: password });
+    }
 
     const changeRouter = (routerTo: string) => {
         router.replace(routerTo);
     };
 
     const handleSubmit = (e: React.FormEvent) => {
-        setIsLogin(true);
+        setAuthProcessInit(true);
         e.preventDefault();
         userDataAuthProcess();
 
         setEmail('');
         setPassword('');
-        setIsLogin(false)
+        setAuthProcessInit(false)
     };
 
 
@@ -75,8 +76,9 @@ export default function AuthPage() {
                         {isLogin ? 'Cadastre-se' : 'Login'}
                     </button>
                 </p>
+                <LoadingModal open={authProcessInit} />
+
             </div>
-            <LoadingModal open={isLogin}/>
         </div>
     );
 }

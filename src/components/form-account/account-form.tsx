@@ -1,18 +1,18 @@
 'use client';
 import { supabase } from "@/utils/supabase/client"
 import { type User } from "@supabase/supabase-js";
-import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 import { FaRegSave, FaRegUserCircle } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { MdEdit } from "react-icons/md";
+import { useRouter } from 'next/navigation';
 
 export default function FormAccount({ user }: { user: User | null }) {
-    const [name, setName] = useState<string>('');
-    const [userName, setUserName] = useState<string>();
-    const [userEmail, setUserEmail] = useState<string>();
+    const [name, setName] = useState<string>(' ');
+    const [userName, setUserName] = useState<string>(' ');
+    const [userEmail, setUserEmail] = useState<string>(' ');
     const [onEdit, setOnEdit] = useState<boolean>(false);
-
+    const router = useRouter();
     const getUserData = useCallback(async () => {
         try {
             const { data, error, status } = await (supabase).from('profiles').select('full_name, username_website, avatar_url').eq('id', user?.id).single();
@@ -51,15 +51,20 @@ export default function FormAccount({ user }: { user: User | null }) {
     if (!user) return;
 
     const onEditUserPersonalInfo = () => {
-        setOnEdit(!onEdit);
+        setOnEdit(true);
     }
 
     const saveInfo = () => {
         updateUserPersonalInfo();
     }
 
-    const logout = () => {
-        
+    const logout = async () => {
+        const { error: errorLogout } = await supabase.auth.signOut();
+
+        if(errorLogout) {
+            console.error('Erro ao deslogar');
+        }
+        router.replace('/login');
     }
 
     return (
@@ -78,7 +83,7 @@ export default function FormAccount({ user }: { user: User | null }) {
                         </div>
                     </div>
                     <div className="w-full flex flex-col items-end justify-end gap-4">
-                        <button className="px-4 py-2 md:px-8 md:py-3 text-white rounded bg-blue-600 hover:bg-blue-700 transition" onClick={(e) => onEditUserPersonalInfo} type="button">
+                        <button className="px-4 py-2 md:px-8 md:py-3 text-white rounded bg-blue-600 hover:bg-blue-700 transition" onClick={onEditUserPersonalInfo} type="button">
                             <MdEdit className="text-[20px]" />
                         </button>
                         {
