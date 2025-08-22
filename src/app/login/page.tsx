@@ -9,7 +9,7 @@ import { useState } from 'react';
 
 export default function AuthPage() {
     const [isLogin, setIsLogin] = useState(true);
-    const [authProcessInit, setAuthProcessInit] = useState(false);
+    const [authProcessInit, setAuthProcessInit] = useState<boolean>(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
@@ -22,10 +22,10 @@ export default function AuthPage() {
         router.replace(routerTo);
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         setAuthProcessInit(true);
         e.preventDefault();
-        userDataAuthProcess();
+        await userDataAuthProcess();
 
         setEmail('');
         setPassword('');
@@ -36,7 +36,7 @@ export default function AuthPage() {
 
     return (
         <div className="w-full flex items-center justify-center bg-gray-100">
-            <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-md">
+            <div className="w-full max-w-md p-8 bg-white rounded-lg md:shadow-md">
                 <h1 className="text-2xl font-bold mb-6 text-center">
                     {isLogin ? 'Login' : 'Cadastro'}
                 </h1>
@@ -47,7 +47,7 @@ export default function AuthPage() {
                         placeholder="E-mail"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="border p-2 rounded border-blue-600 outline-none"
+                        className="border p-2 rounded-lg border-blue-600 outline-none"
                         required
                     />
                     <input
@@ -55,13 +55,13 @@ export default function AuthPage() {
                         placeholder="Senha"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="border p-2 rounded border-blue-600 outline-none"
+                        className="border p-2 rounded-lg border-blue-600 outline-none"
                         required
                         min={6}
                     />
                     <button
                         type="submit"
-                        className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+                        className="bg-blue-600 text-white p-2 hover:bg-blue-700 transition rounded-lg"
                     >
                         {isLogin ? 'Entrar' : 'Cadastrar'}
                     </button>
