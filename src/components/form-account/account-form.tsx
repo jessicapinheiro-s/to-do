@@ -64,7 +64,7 @@ export default function FormAccount({ user }: { user: User | null }) {
         if(errorLogout) {
             console.error('Erro ao deslogar');
         }
-        router.replace('/login');
+        router.replace('/');
     }
 
     return (
