@@ -2,6 +2,7 @@
 'use client';
 
 import { authUser } from '@/app/login/actions';
+import LoadingModal from '@/components/modal/loanding-modal';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -21,11 +22,13 @@ export default function AuthPage() {
     };
 
     const handleSubmit = (e: React.FormEvent) => {
+        setIsLogin(true);
         e.preventDefault();
         userDataAuthProcess();
 
         setEmail('');
         setPassword('');
+        setIsLogin(false)
     };
 
 
@@ -73,6 +76,7 @@ export default function AuthPage() {
                     </button>
                 </p>
             </div>
+            <LoadingModal open={isLogin}/>
         </div>
     );
 }
