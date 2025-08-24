@@ -2,7 +2,6 @@
 'use client';
 import { useState } from 'react';
 import { useTaskStore, Task } from '../../../stores/tasks';
-import { useRouter } from 'next/navigation';
 import ModalNotificacao from '../modal/modal-notificacao';
 
 export default function FormCadastroTarefas() {
@@ -10,13 +9,9 @@ export default function FormCadastroTarefas() {
     const [urgencia, setUrgencia] = useState('');
     const [grupo, setGrupo] = useState('');
     const [data, setData] = useState('');
-    const { tasks, addTask, removeTask } = useTaskStore();
-    const router = useRouter();
+    const [repeat, setIfRepeat] = useState<string>(' ');
+    const { addTask } = useTaskStore();
     const [openModalNotification, setOpenModalNotification] = useState<boolean>(false);
-
-    const changeRouter = (routerTo: string) => {
-        router.replace(routerTo);
-    }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -41,12 +36,16 @@ export default function FormCadastroTarefas() {
             const semanasDisponiveis = Math.floor(diferencaHojeUltimoDia / 7);
 
 
-            for (let i = 0; i < semanasDisponiveis; i++) {
-                if (i !== 0) {
-                    dateInQuestion.setDate(dateInQuestion.getDate() + 7);
+            if (repeat) {
+                for (let i = 0; i < semanasDisponiveis; i++) {
+                    if (i !== 0) {
+                        dateInQuestion.setDate(dateInQuestion.getDate() + 7);
+                    }
+                    const dataAtualizada: Task = { ...objToCreate, taskDate: new Date(dateInQuestion).toISOString().split("T")[0] };
+                    addTask(dataAtualizada);
                 }
+            } else {
                 const dataAtualizada: Task = { ...objToCreate, taskDate: new Date(dateInQuestion).toISOString().split("T")[0] };
-
                 addTask(dataAtualizada);
             }
 
@@ -54,11 +53,16 @@ export default function FormCadastroTarefas() {
             const mesAtual = dateInQuestion.getMonth();
             const mesesFaltantes = 12 - mesAtual;
 
-            for (let i = 0; i < mesesFaltantes; i++) {
-                if (i !== 0) {
-                    dateInQuestion.setMonth(dateInQuestion.getMonth() + 1);
-                }
+            if (repeat) {
+                for (let i = 0; i < mesesFaltantes; i++) {
+                    if (i !== 0) {
+                        dateInQuestion.setMonth(dateInQuestion.getMonth() + 1);
+                    }
 
+                    const dataAtualizada: Task = { ...objToCreate, taskDate: new Date(dateInQuestion).toISOString().split("T")[0] };
+                    addTask(dataAtualizada);
+                }
+            } else {
                 const dataAtualizada: Task = { ...objToCreate, taskDate: new Date(dateInQuestion).toISOString().split("T")[0] };
                 addTask(dataAtualizada);
             }
@@ -91,7 +95,16 @@ export default function FormCadastroTarefas() {
                     className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     placeholder='Task name'
                 />
-
+                <select
+                    value={repeat}
+                    onChange={(e) => setIfRepeat(e.target.value)}
+                    className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    required
+                >
+                    <option value="">Repeat</option>
+                    <option value="Low">Yes</option>
+                    <option value="Medium">No</option>
+                </select>
                 <select
                     value={urgencia}
                     onChange={(e) => setUrgencia(e.target.value)}
@@ -134,7 +147,7 @@ export default function FormCadastroTarefas() {
                 </button>
 
             </form>
-            <ModalNotificacao title={'Task created sucessfully'} text={''} open={openModalNotification} onClose={() => setOpenModalNotification(false)}/>
+            <ModalNotificacao title={'Task created sucessfully'} text={''} open={openModalNotification} onClose={() => setOpenModalNotification(false)} />
         </div>
     );
 }
