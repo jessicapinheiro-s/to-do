@@ -127,7 +127,7 @@ export default function CadastrarTarefa() {
     return (
         <div className="flex flex-col min-h-screen">
             <Header />
-            <main className="flex-1 w-full h-full flex flex-col items-center justify-start p-10 md:p-20 gap-y-4">
+            <main className="flex-1 w-full flex flex-col items-center justify-start p-10 md:p-20 gap-y-4">
                 <section className="w-full flex flex-row items-center justify-end">
                     <section className="w-full md:w-12/12 flex flex-row items-center justify-between md:justify-end gap-4 flex-wrap">
                         <section className="w-full md:w-4/12 flex flex-row items-start md:justify-between justify-end gap-2">
@@ -171,7 +171,7 @@ export default function CadastrarTarefa() {
                         </section>
                     </section>
                 </section>
-                <section className="w-full flex-1 flex flex-row flex-wrap gap-10  items-start justify-start" >
+                <section className="w-full flex-1 flex flex-row flex-wrap gap-10 items-start justify-start" >
                     {
                         optionsTOshow?.length !== 0 && (
                             optionsTOshow?.map((item, index) => (
@@ -181,8 +181,8 @@ export default function CadastrarTarefa() {
                     }
                     {
                         optionsTOshow?.length === 0 && (
-                            <section className="w-full  flex flex-col items-center justify-center">
-                                <span className="text-3xl">Você não tem nenhuma task cadastrada</span>
+                            <section className="w-full flex-1 flex self-stretch flex-col items-center justify-center">
+                                <span className="text-3xl">You haven’t created any task yet.</span>
                             </section>
                         )
                     }
