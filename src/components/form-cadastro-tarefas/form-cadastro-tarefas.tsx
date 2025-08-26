@@ -1,6 +1,6 @@
 // components/TaskForm.tsx
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTaskStore, Task } from '../../../stores/tasks';
 import ModalNotificacao from '../modal/modal-notificacao';
 import { supabase } from '@/utils/supabase/client';
@@ -10,27 +10,33 @@ export default function FormCadastroTarefas() {
     const [urgencia, setUrgencia] = useState('');
     const [grupo, setGrupo] = useState('');
     const [data, setData] = useState('');
-    const [repeat, setIfRepeat] = useState<string>(' ');
+    const [repeat, setIfRepeat] = useState<boolean>();
     const { addTask } = useTaskStore();
     const [openModalNotification, setOpenModalNotification] = useState<boolean>(false);
 
     const createTasks = async (tasks: Task[]) => {
-        await Promise.all(
-            tasks.map(async item => {
-                const { error, data } = await supabase.from('users').insert({
-                    task_name: item.taskName,
-                    task_group: item.taskClassification ,
-                    urgency_classification: item.taskUrgency,
-                    task_repeat: item.task_repeat,
-                    task_date: item.taskDate,
-                    user_id: ''
-                });
+        const {
+            data: { user },
+        } = await (await supabase).auth.getUser();
 
-                if (!error) {
-                    console.log('Task criada com sucesso!');
-                }
-            })
-        );
+        if (user?.id) {
+            await Promise.all(
+                tasks.map(async item => {
+                    const { error, data } = await supabase.from('tasks').insert({
+                        task_name: item.taskName,
+                        task_group: item.taskClassification,
+                        urgency_classification: item.taskUrgency,
+                        task_repeat: item.task_repeat,
+                        task_date: item.taskDate,
+                        user_id: user?.id,
+                    });
+
+                    if (!error) {
+                        console.log('Task criada com sucesso!');
+                    }
+                })
+            );
+        }
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -40,12 +46,14 @@ export default function FormCadastroTarefas() {
         const dateInQuestion = new Date(data);
         dateInQuestion.setDate(dateInQuestion.getDate() + 1);
 
+        let taskArrToParam = [];
         const objToCreate: Task = {
             taskName: nome,
             taskStatus: 'Ativo',
             taskDate: new Date(dateInQuestion).toISOString().split("T")[0],
             taskUrgency: urgencia,
-            taskClassification: grupo
+            taskClassification: grupo,
+            task_repeat: repeat
         }
 
         if (grupo === 'Weekly') {
@@ -62,16 +70,16 @@ export default function FormCadastroTarefas() {
                         dateInQuestion.setDate(dateInQuestion.getDate() + 7);
                     }
                     const dataAtualizada: Task = { ...objToCreate, taskDate: new Date(dateInQuestion).toISOString().split("T")[0] };
-                    addTask(dataAtualizada);
+                    taskArrToParam.push(dataAtualizada);
                 }
             } else {
-                const dataAtualizada: Task = { ...objToCreate, taskDate: new Date(dateInQuestion).toISOString().split("T")[0] };
-                addTask(dataAtualizada);
+                taskArrToParam.push(objToCreate);
             }
 
         } else if (grupo === 'Monthly') {
             const mesAtual = dateInQuestion.getMonth();
             const mesesFaltantes = 12 - mesAtual;
+
 
             if (repeat) {
                 for (let i = 0; i < mesesFaltantes; i++) {
@@ -80,27 +88,22 @@ export default function FormCadastroTarefas() {
                     }
 
                     const dataAtualizada: Task = { ...objToCreate, taskDate: new Date(dateInQuestion).toISOString().split("T")[0] };
-                    addTask(dataAtualizada);
+                    taskArrToParam.push(dataAtualizada);
                 }
             } else {
-                const dataAtualizada: Task = { ...objToCreate, taskDate: new Date(dateInQuestion).toISOString().split("T")[0] };
-                addTask(dataAtualizada);
+                taskArrToParam.push(objToCreate);
             }
         } else {
-            const taskArrToParam = [
-                objToCreate
-            ];
-            await createTasks(taskArrToParam);
-            //addTask(objToCreate);
+            taskArrToParam.push(objToCreate);
         }
+
+        await createTasks(taskArrToParam);
 
         setNome('');
         setUrgencia('');
         setGrupo('');
         setData('');
-
         setOpenModalNotification(!openModalNotification)
-        //changeRouter('/minhas-tarefas');
     };
 
     return (
@@ -120,14 +123,14 @@ export default function FormCadastroTarefas() {
                     placeholder='Task name'
                 />
                 <select
-                    value={repeat}
-                    onChange={(e) => setIfRepeat(e.target.value)}
+                    value={repeat == null ? 'Repeat' : repeat ? 'Yes' : 'No'}
+                    onChange={(e) => setIfRepeat(e.target.value === 'Yes')}
                     className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                 >
                     <option value="">Repeat</option>
-                    <option value="Low">Yes</option>
-                    <option value="Medium">No</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
                 </select>
                 <select
                     value={urgencia}
