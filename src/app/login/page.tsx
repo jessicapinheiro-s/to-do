@@ -3,8 +3,11 @@
 
 import { authUser } from '@/app/login/actions';
 import LoadingModal from '@/components/modal/loanding-modal';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { mapInfoBaseToApp } from '@/utils/supabase/helpers';
+import { useEffect, useState } from 'react';
+import { Task, useTaskStore } from '../../../stores/tasks';
+//import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 
 export default function AuthPage() {
@@ -12,27 +15,53 @@ export default function AuthPage() {
     const [authProcessInit, setAuthProcessInit] = useState<boolean>(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const router = useRouter();
+    const {
+        tasks,
+        addTask
+    } = useTaskStore();
 
     const userDataAuthProcess = async () => {
         await authUser({ type: isLogin ? 'login' : 'cadastro', email: email, password: password });
     }
 
-    const changeRouter = (routerTo: string) => {
-        router.replace(routerTo);
+    const getInitialData = async () => {
+        try {
+            const data: Task[] | [] = await mapInfoBaseToApp();
+            data?.forEach(task => {
+                addTask(task);
+            });
+
+            console.log('data', data);
+        } catch (error) {
+
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         setAuthProcessInit(true);
         e.preventDefault();
-        await userDataAuthProcess();
-
-        setEmail('');
-        setPassword('');
-        setAuthProcessInit(false)
+        try {
+            await userDataAuthProcess();
+            console.log('userDataAuthProcess')
+            await getInitialData();
+            console.log('getInitialData')
+            setEmail('');
+            setPassword('');
+            //revalidatePath('/', 'layout');
+        } catch (error) {
+            console.error('Error', error);
+        } finally {
+            setAuthProcessInit(false);
+            redirect('/minha-conta');
+        }
     };
 
 
+
+
+    useEffect(() => {
+        //getInitialData();
+    }, []);
 
     return (
         <div className="w-full flex items-center justify-center bg-gray-100">

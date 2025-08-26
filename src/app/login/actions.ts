@@ -39,9 +39,6 @@ export const authUser = async (props: propsAuth) => {
                 });
                 if (profileError) throw new Error(profileError.message)
             }
-
-            revalidatePath('/', 'layout');
-            redirect('/minha-conta');
         }
     }
 

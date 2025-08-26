@@ -6,6 +6,8 @@ import { FaRegSave, FaRegUserCircle } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { MdEdit } from "react-icons/md";
 import { useRouter } from 'next/navigation';
+import { Task, useTaskStore } from "../../../stores/tasks";
+import { mapInfoBaseToApp } from "@/utils/supabase/helpers";
 
 export default function FormAccount({ user }: { user: User | null }) {
     const [name, setName] = useState<string>(' ');
@@ -13,6 +15,9 @@ export default function FormAccount({ user }: { user: User | null }) {
     const [userEmail, setUserEmail] = useState<string>(' ');
     const [onEdit, setOnEdit] = useState<boolean>(false);
     const router = useRouter();
+   
+
+
     const getUserData = useCallback(async () => {
         try {
             const { data, error, status } = await (supabase).from('profiles').select('full_name, username_website, avatar_url').eq('id', user?.id).single();
@@ -45,7 +50,9 @@ export default function FormAccount({ user }: { user: User | null }) {
 
     useEffect(() => {
         getUserData();
-    }, [user, getUserData])
+    }, [user, getUserData]);
+
+    
 
 
     if (!user) return;
@@ -61,7 +68,7 @@ export default function FormAccount({ user }: { user: User | null }) {
     const logout = async () => {
         const { error: errorLogout } = await supabase.auth.signOut();
 
-        if(errorLogout) {
+        if (errorLogout) {
             console.error('Erro ao deslogar');
         }
         router.replace('/');

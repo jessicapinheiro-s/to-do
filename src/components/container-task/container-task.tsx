@@ -26,7 +26,7 @@ export default function ContainerTask(props: propsContainer) {
             <section className="w-full flex  gap-5  flex-row flex-wrap items-center justify-start md:py-10 md:px-16 py-5 px-8" style={{
             }}>
                 {arrInfoTask.map((task, index) => (
-                    <div key={index} className="w-2xs h-20 rounded-lg flex flex-row bg-white items-center justify-between border border-[#e0e0e0]">
+                    <div key={index} className="w-2xs h-30 rounded-lg flex flex-row bg-white items-center justify-between border border-[#e0e0e0]">
                         <span
                             className="rounded-tl-lg rounded-bl-lg h-full w-2.5"
                             style={{
@@ -38,7 +38,7 @@ export default function ContainerTask(props: propsContainer) {
                                 "#38A169"
                             }}
                         />
-                        <div className="w-full flex flex-row px-5 py-3">
+                        <div className="w-full flex flex-row px-5 py-3 break-words">
                             <div className="w-4/5">
                                 <h2 className="font-semibold text-[16px]">{task.taskName}</h2>
                                 <p>{task.taskDate}</p>
