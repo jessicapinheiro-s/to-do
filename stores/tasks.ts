@@ -7,6 +7,7 @@ export type Task = {
     taskId?: number;
     taskUrgency: string;
     taskClassification: string;
+    task_repeat?: boolean
 }
 
 export type TaskStore = {

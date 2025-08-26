@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useTaskStore, Task } from '../../../stores/tasks';
 import ModalNotificacao from '../modal/modal-notificacao';
+import { supabase } from '@/utils/supabase/client';
 
 export default function FormCadastroTarefas() {
     const [nome, setNome] = useState('');
@@ -13,7 +14,26 @@ export default function FormCadastroTarefas() {
     const { addTask } = useTaskStore();
     const [openModalNotification, setOpenModalNotification] = useState<boolean>(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const createTasks = async (tasks: Task[]) => {
+        await Promise.all(
+            tasks.map(async item => {
+                const { error, data } = await supabase.from('users').insert({
+                    task_name: item.taskName,
+                    task_group: item.taskClassification ,
+                    urgency_classification: item.taskUrgency,
+                    task_repeat: item.task_repeat,
+                    task_date: item.taskDate,
+                    user_id: ''
+                });
+
+                if (!error) {
+                    console.log('Task criada com sucesso!');
+                }
+            })
+        );
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!nome && !urgencia && !grupo && !data) return;
 
@@ -67,7 +87,11 @@ export default function FormCadastroTarefas() {
                 addTask(dataAtualizada);
             }
         } else {
-            addTask(objToCreate);
+            const taskArrToParam = [
+                objToCreate
+            ];
+            await createTasks(taskArrToParam);
+            //addTask(objToCreate);
         }
 
         setNome('');
