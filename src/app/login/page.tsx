@@ -3,9 +3,7 @@
 
 import { authUser } from '@/app/login/actions';
 import LoadingModal from '@/components/modal/loanding-modal';
-import { mapInfoBaseToApp } from '@/utils/supabase/helpers';
-import { useEffect, useState } from 'react';
-import { Task, useTaskStore } from '../../../stores/tasks';
+import {useState } from 'react';
 //import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 

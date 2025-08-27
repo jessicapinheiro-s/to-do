@@ -1,6 +1,9 @@
 import { IoCheckmarkDoneCircleOutline } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
-import { Task } from "../../../stores/tasks";
+import { Task, useTaskStore } from "../../../stores/tasks";
+import { supabase } from "@/utils/supabase/client";
+import { mapInfoBaseToApp } from "@/utils/supabase/helpers";
+import { getAndUpdateStore } from "@/utils/task/helpers";
 
 interface propsContainer {
     arrInfoTask: Task[];
@@ -10,13 +13,27 @@ interface propsContainer {
 export default function ContainerTask(props: propsContainer) {
     const { arrInfoTask, title } = props;
 
-    const deleteTask = (e: React.MouseEvent<SVGElement>) => {
-        console.log('Task to be deleted', e);
-    }
-    const updateTask = (e: React.MouseEvent<SVGElement>) => {
-        console.log('Task to be updated', e);
-    }
+    const deleteTask = async (taskId: number) => {
+        try {
+            const { error } = await supabase.from('tasks').delete().eq('id', taskId);
+        } catch (error) {
+            throw new Error('Erro ao deletar task');
+        } finally {
+            await getAndUpdateStore();
+        }
+    };
 
+    const updateTask = async (taskId: number, taskStatus: string) => {
+        try {
+            const { error } = await supabase.from('tasks').update({
+                task_status: taskStatus === 'Ativo' ? 'Inativo' : 'Ativo'
+            }).eq('id', taskId);
+        } catch (error) {
+            throw new Error('Erro ao deletar task');
+        } finally {
+            await getAndUpdateStore();
+        }
+    }
 
     return (
         <section className="w-full flex flex-col justify-start items-center rounded-lg gap-4  border border-[#e0e0e0] rounded-tl-lg rounded-tr-lg" >
@@ -26,16 +43,16 @@ export default function ContainerTask(props: propsContainer) {
             <section className="w-full flex  gap-5  flex-row flex-wrap items-center justify-start md:py-10 md:px-16 py-5 px-8" style={{
             }}>
                 {arrInfoTask.map((task, index) => (
-                    <div key={index} className="w-2xs h-30 rounded-lg flex flex-row bg-white items-center justify-between border border-[#e0e0e0]">
+                    <div key={task.taskId} className="w-2xs h-30 rounded-lg flex flex-row bg-white items-center justify-between border border-[#e0e0e0]">
                         <span
                             className="rounded-tl-lg rounded-bl-lg h-full w-2.5"
                             style={{
                                 backgroundColor:
-                                task.taskUrgency === "High" ? 
-                                "#E53E3E"
-                                : task.taskUrgency === "Medium" ? 
-                                "#D69E2E" : 
-                                "#38A169"
+                                    task.taskUrgency === "High" ?
+                                        "#E53E3E"
+                                        : task.taskUrgency === "Medium" ?
+                                            "#D69E2E" :
+                                            "#38A169"
                             }}
                         />
                         <div className="w-full flex h-full items-center flex-row px-5 py-0 break-words">
@@ -45,15 +62,15 @@ export default function ContainerTask(props: propsContainer) {
                             </div>
                             <div className="w-1/5 flex flex-col items-center justify-between">
                                 <div>
-                                    <IoCheckmarkDoneCircleOutline className="text-[20px]"  style={{
-                                        color: 
-                                        task.taskStatus === 'Ativo' ?
-                                        '#4A4A4A' :
-                                        '#155dfc'  
-                                    }} onClick={(e) => updateTask(e)} />
+                                    <IoCheckmarkDoneCircleOutline className="text-[20px]" style={{
+                                        color:
+                                            task.taskStatus === 'Ativo' ?
+                                                '#4A4A4A' :
+                                                '#155dfc'
+                                    }} onClick={(e) => updateTask(task.taskId, task.taskStatus)} />
                                 </div>
                                 <div>
-                                    <MdDelete className="text-[#4A4A4A] text-[20px]" onClick={(e) => deleteTask(e)} />
+                                    <MdDelete className="text-[#4A4A4A] text-[20px]" onClick={(e) => deleteTask(task.taskId)} />
                                 </div>
                             </div>
                         </div>

@@ -4,7 +4,7 @@ import { Task, useTaskStore } from "../../../stores/tasks";
 import { useEffect, useMemo, useState } from "react";
 import ContainerTask from "@/components/container-task/container-task";
 import { mapInfoBaseToApp } from "@/utils/supabase/helpers";
-import { shallow } from "zustand/shallow";
+import { getAndUpdateStore } from "@/utils/task/helpers";
 
 interface ObjParam {
     arr: Task[],
@@ -21,20 +21,12 @@ export default function CadastrarTarefa() {
             title: type
         })).filter(item => item.arr.length !== 0);
     };
-    
+
     const getInitialData = async () => {
         try {
-            const data: Task[] | [] = await mapInfoBaseToApp();
-            const tasksMaped = data.map(task => {
-                return {
-                    ...task,
-                    taskDate: new Date(task.taskDate).toLocaleDateString()
-                }
-            });
-            addTasks(tasksMaped);
-
-        } catch (error) {
-            throw new Error('Erro ao mapear informações da base para o app');
+            await getAndUpdateStore();
+        } catch (erro) {
+            console.error('Erro ao mapear informações da base para o app, erro:', erro);
         }
     };
 
@@ -43,16 +35,25 @@ export default function CadastrarTarefa() {
         let baseTasks = tasks;
 
         if (filterTask === "Completed") {
-            // Completed → só pega as com data menor que hoje
-            baseTasks = baseTasks.filter(item => new Date(item.taskDate).getTime() < new Date().getTime());
+            baseTasks = baseTasks.filter(item => item.taskStatus === 'Inativo');
         }
 
-        // Regras de filterTask
-        if (filterTask === "All" || filterTask === "Completed") {
-            tasksByCategory = createGroups(baseTasks, ["Daily", "Weekly", "Monthly"]);
-        } else {
-            tasksByCategory = createGroups(baseTasks, ["Daily", "Weekly", "Monthly"]);
+        if (filterTask === "Delayed") {
+            console.log({
+                baseTasks: baseTasks.map(item => {
+                    return {
+                        ...item,
+                        taskDate: !(new Date(item.taskDate).getTime() < new Date().getTime()),
+                        taskDateReq: new Date(item.taskDate),
+                        utc: new Date().getTime(),
+                        data: item.taskDate
+                    }
+                }),
+            });
+            baseTasks = baseTasks.filter(item => !(new Date(item.taskDate).getTime() < new Date().getTime()) && item.taskStatus === 'Ativo');
         }
+
+        tasksByCategory = createGroups(baseTasks, ["Daily", "Weekly", "Monthly"]);
 
         // Regras de viewTask
         if (viewTask === "View") {
