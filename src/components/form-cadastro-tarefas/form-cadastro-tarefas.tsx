@@ -41,7 +41,7 @@ export default function FormCadastroTarefas() {
         const dateInQuestion = new Date(data);
         dateInQuestion.setDate(dateInQuestion.getDate() + 1);
 
-        let taskArrToParam = [];
+        const taskArrToParam = [];
         const objToCreate: Task = {
             taskName: nome,
             taskStatus: 'Ativo',
