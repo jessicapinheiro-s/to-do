@@ -1,140 +1,70 @@
 'use client';
 import Header from "@/components/header/header";
 import { Task, useTaskStore } from "../../../stores/tasks";
-import { MdDelete } from "react-icons/md";
-import { IoCheckmarkDoneCircleOutline } from "react-icons/io5";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ContainerTask from "@/components/container-task/container-task";
 import { mapInfoBaseToApp } from "@/utils/supabase/helpers";
+import { shallow } from "zustand/shallow";
 
 interface ObjParam {
     arr: Task[],
     title: string;
 }
 export default function CadastrarTarefa() {
-    const { tasks, addTask } = useTaskStore();
+    const { tasks, addTasks } = useTaskStore();
     const [filterTask, setFilterTask] = useState<string>('All');
     const [viewTask, setViewTask] = useState<string>('View');
-    const [optionsTOshow, setOptionsTOshow] = useState<ObjParam[]>([]);
 
-    const mapingTasksInfo: Task[] = tasks.map(task => {
-        return {
-            ...task,
-            taskDate: new Date(task.taskDate).toLocaleDateString()
-        }
-    });
-
-    useEffect(() => {
-        let tasksByCategory: ObjParam[] = [];
-
-        if (filterTask === 'All') {
-            tasksByCategory = [
-                {
-                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Daily'),
-                    title: 'Daily'
-                },
-                {
-                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Weekly'),
-                    title: 'Weekly'
-                },
-                {
-                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Monthly'),
-                    title: 'Monthly'
-                }
-            ].filter(item => item.arr.length !== 0);
-            setOptionsTOshow(tasksByCategory);
-        } else if (filterTask === 'Completed') {
-            tasksByCategory = [
-                {
-                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Daily'),
-                    title: 'Daily'
-                },
-                {
-                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Weekly'),
-                    title: 'Weekly'
-                },
-                {
-                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Monthly'),
-                    title: 'Monthly'
-                }
-            ].filter(item => item.arr.length !== 0);
-        } else {
-            const valueFiltered = mapingTasksInfo.filter(item => new Date(item.taskDate).getTime() < new Date().getTime());
-            tasksByCategory = [
-                {
-                    arr: valueFiltered.filter(task => task.taskClassification === 'Daily'),
-                    title: 'Daily'
-                },
-                {
-                    arr: valueFiltered.filter(task => task.taskClassification === 'Weekly'),
-                    title: 'Weekly'
-                },
-                {
-                    arr: valueFiltered.filter(task => task.taskClassification === 'Monthly'),
-                    title: 'Monthly'
-                }
-            ].filter(item => item.arr.length !== 0);
-
-            setOptionsTOshow(tasksByCategory);
-        }
-    }, [filterTask, tasks]);
-
-    useEffect(() => {
-        let tasksByView: ObjParam[] = [];
-
-        if (viewTask === 'View') {
-            tasksByView = [
-                {
-                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Daily'),
-                    title: 'Daily'
-                },
-                {
-                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Weekly'),
-                    title: 'Weekly'
-                },
-                {
-                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Monthly'),
-                    title: 'Monthly'
-                }
-            ].filter(item => item.arr.length !== 0);
-            setOptionsTOshow(tasksByView);
-        } else if (viewTask === 'Daily') {
-            tasksByView = [
-                {
-                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Daily'),
-                    title: 'Daily'
-                }
-            ].filter(item => item.arr.length !== 0);
-            setOptionsTOshow(tasksByView);
-        } else if (viewTask === 'Monthly') {
-            tasksByView = [
-                {
-                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Monthly'),
-                    title: 'Monthly'
-                }
-            ].filter(item => item.arr.length !== 0);
-            setOptionsTOshow(tasksByView);
-        } else {
-            tasksByView = [
-                {
-                    arr: mapingTasksInfo.filter(task => task.taskClassification === 'Weekly'),
-                    title: 'Weekly'
-                }
-            ].filter(item => item.arr.length !== 0);
-            setOptionsTOshow(tasksByView);
-        }
-    }, [viewTask, tasks]);
-
+    const createGroups = (arr: typeof tasks, types: string[]): ObjParam[] => {
+        return types.map(type => ({
+            arr: arr.filter(task => task.taskClassification === type),
+            title: type
+        })).filter(item => item.arr.length !== 0);
+    };
+    
     const getInitialData = async () => {
         try {
             const data: Task[] | [] = await mapInfoBaseToApp();
-            data?.forEach(task => {
-                addTask(task);
+            const tasksMaped = data.map(task => {
+                return {
+                    ...task,
+                    taskDate: new Date(task.taskDate).toLocaleDateString()
+                }
             });
+            addTasks(tasksMaped);
+
         } catch (error) {
             throw new Error('Erro ao mapear informações da base para o app');
         }
     };
+
+    const optionsTOshow: ObjParam[] = useMemo(() => {
+        let tasksByCategory: ObjParam[] = [];
+        let baseTasks = tasks;
+
+        if (filterTask === "Completed") {
+            // Completed → só pega as com data menor que hoje
+            baseTasks = baseTasks.filter(item => new Date(item.taskDate).getTime() < new Date().getTime());
+        }
+
+        // Regras de filterTask
+        if (filterTask === "All" || filterTask === "Completed") {
+            tasksByCategory = createGroups(baseTasks, ["Daily", "Weekly", "Monthly"]);
+        } else {
+            tasksByCategory = createGroups(baseTasks, ["Daily", "Weekly", "Monthly"]);
+        }
+
+        // Regras de viewTask
+        if (viewTask === "View") {
+            tasksByCategory = createGroups(baseTasks, ["Daily", "Weekly", "Monthly"]);
+        } else {
+            tasksByCategory = createGroups(baseTasks, [viewTask]);
+        }
+
+        return tasksByCategory;
+
+    }, [filterTask, viewTask, tasks]);
+
     useEffect(() => {
         getInitialData();
     }, []);
@@ -190,7 +120,7 @@ export default function CadastrarTarefa() {
                     {
                         optionsTOshow?.length !== 0 && (
                             optionsTOshow?.map((item, index) => (
-                                <ContainerTask arrInfoTask={item.arr} title={item.title} key={index} />
+                                <ContainerTask arrInfoTask={item.arr} title={item.title} key={item.arr[0].taskId} />
                             ))
                         )
                     }

@@ -1,7 +1,7 @@
 // components/TaskForm.tsx
 'use client';
-import { useEffect, useState } from 'react';
-import { useTaskStore, Task } from '../../../stores/tasks';
+import { useState } from 'react';
+import { Task } from '../../../stores/tasks';
 import ModalNotificacao from '../modal/modal-notificacao';
 import { supabase } from '@/utils/supabase/client';
 
@@ -10,8 +10,7 @@ export default function FormCadastroTarefas() {
     const [urgencia, setUrgencia] = useState('');
     const [grupo, setGrupo] = useState('');
     const [data, setData] = useState('');
-    const [repeat, setIfRepeat] = useState<boolean>();
-    const { addTask } = useTaskStore();
+    const [repeat, setIfRepeat] = useState<boolean | undefined>();
     const [openModalNotification, setOpenModalNotification] = useState<boolean>(false);
 
     const createTasks = async (tasks: Task[]) => {
@@ -30,10 +29,6 @@ export default function FormCadastroTarefas() {
                         task_date: item.taskDate,
                         user_id: user?.id,
                     });
-
-                    if (!error) {
-                        console.log('Task criada com sucesso!');
-                    }
                 })
             );
         }
@@ -103,6 +98,7 @@ export default function FormCadastroTarefas() {
         setUrgencia('');
         setGrupo('');
         setData('');
+        setIfRepeat(undefined);
         setOpenModalNotification(!openModalNotification)
     };
 
@@ -123,7 +119,7 @@ export default function FormCadastroTarefas() {
                     placeholder='Task name'
                 />
                 <select
-                    value={repeat == null ? 'Repeat' : repeat ? 'Yes' : 'No'}
+                    value={repeat == undefined ? 'Repeat' : repeat ? 'Yes' : 'No'}
                     onChange={(e) => setIfRepeat(e.target.value === 'Yes')}
                     className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required

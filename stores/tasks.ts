@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 
+
 export type Task = {
     taskName: string;
     taskDate: string;
@@ -12,12 +13,12 @@ export type Task = {
 
 export type TaskStore = {
     tasks: Task[];
-    addTask: (taskParam: Task) => void;
-    removeTask: (taskParam: Task) => void;
+    addTasks: (tasks: Task[]) => void;
+    removeTask: (tasks: Task) => void;
 }
 
 export const useTaskStore = create<TaskStore>((set) => ({
     tasks: [],
-    addTask: (taskParam) => set((state) => ({ tasks: [...state.tasks, taskParam] })),
-    removeTask: (taskParam) => set((state) => ({ tasks: state.tasks.filter(task => task.taskName !== taskParam.taskName)}))
+    addTasks: (tasks: Task[]) => set({ tasks }),
+    removeTask: (tasks) => set((state) => ({ tasks: state.tasks.filter(task => task.taskName !== tasks.taskName)}))
 }));
