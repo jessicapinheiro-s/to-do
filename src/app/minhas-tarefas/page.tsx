@@ -5,13 +5,14 @@ import { MdDelete } from "react-icons/md";
 import { IoCheckmarkDoneCircleOutline } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import ContainerTask from "@/components/container-task/container-task";
+import { mapInfoBaseToApp } from "@/utils/supabase/helpers";
 
 interface ObjParam {
     arr: Task[],
     title: string;
 }
 export default function CadastrarTarefa() {
-    const { tasks, removeTask } = useTaskStore();
+    const { tasks, addTask } = useTaskStore();
     const [filterTask, setFilterTask] = useState<string>('All');
     const [viewTask, setViewTask] = useState<string>('View');
     const [optionsTOshow, setOptionsTOshow] = useState<ObjParam[]>([]);
@@ -76,7 +77,7 @@ export default function CadastrarTarefa() {
 
             setOptionsTOshow(tasksByCategory);
         }
-    }, [filterTask]);
+    }, [filterTask, tasks]);
 
     useEffect(() => {
         let tasksByView: ObjParam[] = [];
@@ -122,7 +123,21 @@ export default function CadastrarTarefa() {
             ].filter(item => item.arr.length !== 0);
             setOptionsTOshow(tasksByView);
         }
-    }, [viewTask]);
+    }, [viewTask, tasks]);
+
+    const getInitialData = async () => {
+        try {
+            const data: Task[] | [] = await mapInfoBaseToApp();
+            data?.forEach(task => {
+                addTask(task);
+            });
+        } catch (error) {
+            throw new Error('Erro ao mapear informações da base para o app');
+        }
+    };
+    useEffect(() => {
+        getInitialData();
+    }, []);
 
     return (
         <div className="flex flex-col min-h-screen">

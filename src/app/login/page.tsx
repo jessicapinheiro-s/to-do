@@ -15,53 +15,26 @@ export default function AuthPage() {
     const [authProcessInit, setAuthProcessInit] = useState<boolean>(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const {
-        tasks,
-        addTask
-    } = useTaskStore();
 
     const userDataAuthProcess = async () => {
         await authUser({ type: isLogin ? 'login' : 'cadastro', email: email, password: password });
     }
-
-    const getInitialData = async () => {
-        try {
-            const data: Task[] | [] = await mapInfoBaseToApp();
-            data?.forEach(task => {
-                addTask(task);
-            });
-
-            console.log('data', data);
-        } catch (error) {
-
-        }
-    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         setAuthProcessInit(true);
         e.preventDefault();
         try {
             await userDataAuthProcess();
-            console.log('userDataAuthProcess')
-            await getInitialData();
-            console.log('getInitialData')
             setEmail('');
             setPassword('');
             //revalidatePath('/', 'layout');
         } catch (error) {
-            console.error('Error', error);
+            throw new Error('Erro ao autenticar o usuário');
         } finally {
             setAuthProcessInit(false);
             redirect('/minha-conta');
         }
     };
-
-
-
-
-    useEffect(() => {
-        //getInitialData();
-    }, []);
 
     return (
         <div className="w-full flex items-center justify-center bg-gray-100">
