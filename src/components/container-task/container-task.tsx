@@ -38,7 +38,7 @@ export default function ContainerTask(props: propsContainer) {
                                 "#38A169"
                             }}
                         />
-                        <div className="w-full flex flex-row px-5 py-3 break-words">
+                        <div className="w-full flex h-full items-center flex-row px-5 py-0 break-words">
                             <div className="w-4/5">
                                 <h2 className="font-semibold text-[16px]">{task.taskName}</h2>
                                 <p>{task.taskDate}</p>
