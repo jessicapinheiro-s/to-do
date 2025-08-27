@@ -5,7 +5,7 @@ export type Task = {
     taskName: string;
     taskDate: string;
     taskStatus: string;
-    taskId?: number;
+    taskId: number;
     taskUrgency: string;
     taskClassification: string;
     task_repeat?: boolean
@@ -14,11 +14,11 @@ export type Task = {
 export type TaskStore = {
     tasks: Task[];
     addTasks: (tasks: Task[]) => void;
-    removeTask: (tasks: Task) => void;
+    removeTask: (tasksIdContext: number) => void;
 }
 
 export const useTaskStore = create<TaskStore>((set) => ({
     tasks: [],
     addTasks: (tasks: Task[]) => set({ tasks }),
-    removeTask: (tasks) => set((state) => ({ tasks: state.tasks.filter(task => task.taskName !== tasks.taskName)}))
+    removeTask: (tasksIdContext: number) => set((state) => ({ tasks: state.tasks.filter(task => task.taskId !== tasksIdContext)}))
 }));
