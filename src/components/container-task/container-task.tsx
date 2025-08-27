@@ -13,25 +13,29 @@ interface propsContainer {
 export default function ContainerTask(props: propsContainer) {
     const { arrInfoTask, title } = props;
 
-    const deleteTask = async (taskId: number) => {
-        try {
-            const { error } = await supabase.from('tasks').delete().eq('id', taskId);
-        } catch (error) {
-            throw new Error('Erro ao deletar task');
-        } finally {
-            await getAndUpdateStore();
+    const deleteTask = async (taskId: number | undefined) => {
+        if (taskId) {
+            try {
+                const { error } = await supabase.from('tasks').delete().eq('id', taskId);
+            } catch (error) {
+                throw new Error('Erro ao deletar task');
+            } finally {
+                await getAndUpdateStore();
+            }
         }
     };
 
-    const updateTask = async (taskId: number, taskStatus: string) => {
-        try {
-            const { error } = await supabase.from('tasks').update({
-                task_status: taskStatus === 'Ativo' ? 'Inativo' : 'Ativo'
-            }).eq('id', taskId);
-        } catch (error) {
-            throw new Error('Erro ao deletar task');
-        } finally {
-            await getAndUpdateStore();
+    const updateTask = async (taskId: number | undefined, taskStatus: string) => {
+        if (taskId && taskStatus) {
+            try {
+                const { error } = await supabase.from('tasks').update({
+                    task_status: taskStatus === 'Ativo' ? 'Inativo' : 'Ativo'
+                }).eq('id', taskId);
+            } catch (error) {
+                throw new Error('Erro ao deletar task');
+            } finally {
+                await getAndUpdateStore();
+            }
         }
     }
 

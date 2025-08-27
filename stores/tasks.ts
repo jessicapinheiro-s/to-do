@@ -5,7 +5,7 @@ export type Task = {
     taskName: string;
     taskDate: string;
     taskStatus: string;
-    taskId: number;
+    taskId?: number;
     taskUrgency: string;
     taskClassification: string;
     task_repeat?: boolean
