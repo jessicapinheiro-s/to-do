@@ -25,7 +25,17 @@ export const authUser = async (props: propsAuth) => {
         });
 
     if (authError) {
-        redirect('/error');
+        console.log('authError', authError);
+
+        if (authError.code !== 'invalid_credentials' && authError.code !== 'user_not_found') {
+            redirect('/error');
+        }
+
+        return {
+            message: authError.code,
+            code: authError.status
+        };
+
     } else {
         if (data.user) {
             const { id } = data.user;

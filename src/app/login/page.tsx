@@ -3,7 +3,7 @@
 
 import { authUser } from '@/app/login/actions';
 import LoadingModal from '@/components/modal/loanding-modal';
-import {useState } from 'react';
+import { useState } from 'react';
 //import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
@@ -13,9 +13,16 @@ export default function AuthPage() {
     const [authProcessInit, setAuthProcessInit] = useState<boolean>(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorAuth, seterrorAuth] = useState<boolean>(false);
 
     const userDataAuthProcess = async () => {
-        await authUser({ type: isLogin ? 'login' : 'cadastro', email: email, password: password });
+        const result = await authUser({ type: isLogin ? 'login' : 'cadastro', email: email, password: password });
+
+        if (result?.code) {
+            if (result?.code > 300) {
+                seterrorAuth(true)
+            }
+        }
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -25,12 +32,13 @@ export default function AuthPage() {
             await userDataAuthProcess();
             setEmail('');
             setPassword('');
+            redirect('/minha-conta');
+
             //revalidatePath('/', 'layout');
         } catch (error) {
             throw new Error('Erro ao autenticar o usuário');
         } finally {
             setAuthProcessInit(false);
-            redirect('/minha-conta');
         }
     };
 
@@ -76,6 +84,20 @@ export default function AuthPage() {
                         {isLogin ? 'Register' : 'Login'}
                     </button>
                 </p>
+
+                {
+                    errorAuth && (
+                        <p className="mt-4 text-center text-sm text-gray-600">
+                            {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
+                            <button
+                                onClick={() => setIsLogin(!isLogin)}
+                                className="text-blue-600 hover:underline"
+                            >
+                                {isLogin ? 'Register' : 'Login'}
+                            </button>
+                        </p>
+                    )
+                }
                 <LoadingModal open={authProcessInit} />
 
             </div>
