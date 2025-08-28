@@ -75,7 +75,7 @@ export default function FormAccount({ user }: { user: User | null }) {
     return (
         <div className="flex-1 w-full h-full flex flex-col items-center justify-start  gap-y-4">
             <div className="w-full text-center">
-                <h1 className="text-3xl font-semibold text-blue-600">Account</h1>
+                <h1 className="text-3xl font-semibold">Account</h1>
             </div>
             <form
                 className="w-full  flex flex-col gap-8">

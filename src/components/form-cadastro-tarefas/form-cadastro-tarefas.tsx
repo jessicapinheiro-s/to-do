@@ -21,7 +21,7 @@ export default function FormCadastroTarefas() {
         if (user?.id) {
             await Promise.all(
                 tasks.map(async item => {
-                    const { error, data } = await supabase.from('tasks').insert({
+                    const { error } = await supabase.from('tasks').insert({
                         task_name: item.taskName,
                         task_group: item.taskClassification,
                         urgency_classification: item.taskUrgency,
@@ -107,7 +107,7 @@ export default function FormCadastroTarefas() {
             <form
                 className="bg-white p-8 rounded-xl md:shadow-md w-full max-w-md flex flex-col gap-4"
             >
-                <h1 className="text-2xl font-bold mb-4 text-center text-blue-700">
+                <h1 className="text-2xl font-bold mb-4 text-center">
                     Create Task
                 </h1>
                 <input
