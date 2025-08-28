@@ -41,7 +41,7 @@ export default function ContainerTask(props: propsContainer) {
 
     return (
         <section className="w-full flex flex-col justify-start items-center rounded-lg gap-4  border border-[#e0e0e0] rounded-tl-lg rounded-tr-lg" >
-            <div className="w-full text-center border-b-1 border-[#e0e0e0] rounded-tl-lg rounded-tr-lg bg-[#e7e7e7]">
+            <div className="w-full text-center border-b-1 border-[#e0e0e0] rounded-tl-lg rounded-tr-lg bg-[#e7e7e7] py-1">
                 <h1 className="font-semibold text-2xl text-[#4A4A4A]">{title}</h1>
             </div>
             <section className="w-full flex  gap-5  flex-row flex-wrap items-center justify-start md:py-10 md:px-16 py-5 px-8" style={{
