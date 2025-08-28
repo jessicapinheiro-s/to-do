@@ -6,14 +6,18 @@ import { FaRegSave, FaRegUserCircle } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { MdEdit } from "react-icons/md";
 import { useRouter } from 'next/navigation';
+import LoadingModal from "../modal/loanding-modal";
+import ModalNotificacao from "../modal/modal-notificacao";
 
 export default function FormAccount({ user }: { user: User | null }) {
     const [name, setName] = useState<string>(' ');
     const [userName, setUserName] = useState<string>(' ');
     const [userEmail, setUserEmail] = useState<string>(' ');
     const [onEdit, setOnEdit] = useState<boolean>(false);
+    const [openModalNotification, setOpenModalNotification] = useState<boolean>(false);
+
     const router = useRouter();
-   
+
 
 
     const getUserData = useCallback(async () => {
@@ -36,13 +40,14 @@ export default function FormAccount({ user }: { user: User | null }) {
     async function updateUserPersonalInfo() {
         if (!name || !userName || !userEmail) return;
 
-        const { data, error } = await supabase.from('profiles').update({
-            full_name: name,
-            username_website: userName
-        }).eq('id', user?.id);
-
-        if (error) {
-            console.error("Erro ao atualizar:", error.message);
+        try {
+            setOpenModalNotification(true)
+            const { data } = await supabase.from('profiles').update({
+                full_name: name,
+                username_website: userName
+            }).eq('id', user?.id);
+        } catch (error) {
+            console.error('Erro ao atualizar o item');
         }
     }
 
@@ -50,7 +55,7 @@ export default function FormAccount({ user }: { user: User | null }) {
         getUserData();
     }, [user, getUserData]);
 
-    
+
 
 
     if (!user) return;
@@ -170,6 +175,7 @@ export default function FormAccount({ user }: { user: User | null }) {
                     </button>
                 </div>
             </form>
+            <ModalNotificacao title={'Information updated sucessfully!'} text={''} open={openModalNotification} onClose={() => setOpenModalNotification(false)} />
         </div>
     )
 }

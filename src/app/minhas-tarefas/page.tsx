@@ -5,15 +5,17 @@ import { useEffect, useMemo, useState } from "react";
 import ContainerTask from "@/components/container-task/container-task";
 import { mapInfoBaseToApp } from "@/utils/supabase/helpers";
 import { getAndUpdateStore } from "@/utils/task/helpers";
+import LoadingModal from "@/components/modal/loanding-modal";
 
 interface ObjParam {
     arr: Task[],
     title: string;
 }
 export default function CadastrarTarefa() {
-    const { tasks, addTasks } = useTaskStore();
+    const { tasks } = useTaskStore();
     const [filterTask, setFilterTask] = useState<string>('All');
     const [viewTask, setViewTask] = useState<string>('View');
+    const [authProcessInit, setAuthProcessInit] = useState<boolean>(false);
 
     const createGroups = (arr: typeof tasks, types: string[]): ObjParam[] => {
         return types.map(type => ({
@@ -24,9 +26,12 @@ export default function CadastrarTarefa() {
 
     const getInitialData = async () => {
         try {
+            setAuthProcessInit(true);
             await getAndUpdateStore();
         } catch (erro) {
             console.error('Erro ao mapear informações da base para o app, erro:', erro);
+        }finally{
+            setAuthProcessInit(false);
         }
     };
 
@@ -133,6 +138,7 @@ export default function CadastrarTarefa() {
                         )
                     }
                 </section>
+                <LoadingModal open={authProcessInit} />
             </main>
         </div>
     )
