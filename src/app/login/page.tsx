@@ -38,7 +38,7 @@ export default function AuthPage() {
         <div className="w-full flex items-center justify-center bg-gray-100">
             <div className="w-full max-w-md md:p-8 bg-white rounded-lg md:shadow-md">
                 <h1 className="text-2xl font-bold mb-6 text-center">
-                    {isLogin ? 'Login' : 'Cadastro'}
+                    {isLogin ? 'Welcome back!' : 'Welcome!'}
                 </h1>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -52,7 +52,7 @@ export default function AuthPage() {
                     />
                     <input
                         type="password"
-                        placeholder="Senha"
+                        placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="border p-2 rounded-lg border-blue-600 outline-none"
@@ -63,17 +63,17 @@ export default function AuthPage() {
                         type="submit"
                         className="bg-blue-600 text-white p-2 hover:bg-blue-700 transition rounded-lg"
                     >
-                        {isLogin ? 'Entrar' : 'Cadastrar'}
+                        {isLogin ? 'Login' : 'Register'}
                     </button>
                 </form>
 
                 <p className="mt-4 text-center text-sm text-gray-600">
-                    {isLogin ? 'Não tem conta?' : 'Já tem conta?'}{' '}
+                    {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
                     <button
                         onClick={() => setIsLogin(!isLogin)}
                         className="text-blue-600 hover:underline"
                     >
-                        {isLogin ? 'Cadastre-se' : 'Login'}
+                        {isLogin ? 'Register' : 'Login'}
                     </button>
                 </p>
                 <LoadingModal open={authProcessInit} />
