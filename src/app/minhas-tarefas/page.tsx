@@ -60,28 +60,19 @@ export default function CadastrarTarefa() {
             const getLastDayThisWeek: Date = new Date(today.setDate(today.getDate() + (6 - dayOfWeek)));
             const getFirsttDayThisWeek: Date = new Date(new Date(getLastDayThisWeek).setDate(new Date(getLastDayThisWeek).getDate() - 6));
 
-            filterByParameter = baseTasks.filter(item => new Date(item.taskDate).getTime() > getFirsttDayThisWeek.getTime() && new Date(item.taskDate).getTime() < getLastDayThisWeek.getTime())
+            filterByParameter = baseTasks.filter(item => new Date(item.taskDate).getTime() >= getFirsttDayThisWeek.getTime() && new Date(item.taskDate).getTime() <= getLastDayThisWeek.getTime())
             baseTasks = filterByParameter;
 
         } else if (byNowTask === 'This Month') {
             const today: Date = new Date();
-            const todayDay: number = new Date().getDate();;
-            const getLastDayThisWeek: Date = new Date(today.setDate(today.getDate() + 31));
-            const getFirsttDayThisWeek: Date = new Date(new Date(getLastDayThisWeek).setDate(new Date(getLastDayThisWeek).getDate() - 6));
+            const mesAtual = new Date().getMonth();
 
+            const firstDayNextMonth: Date = new Date(new Date(today.setDate(1)).setMonth(mesAtual + 1));
+            const getLastDayThisMonth: Date = new Date(new Date(firstDayNextMonth).setDate(new Date(firstDayNextMonth).getDate() - 1));
+            const getFirsttDayThisMonth: Date = new Date(new Date().setDate(1));
 
-            filterByParameter = baseTasks.filter(item => new Date(item.taskDate).getTime() > getFirsttDayThisWeek.getTime() && new Date(item.taskDate).getTime() < getLastDayThisWeek.getTime())
+            filterByParameter = baseTasks.filter(item => new Date(item.taskDate).getTime() >= getFirsttDayThisMonth.getTime() && new Date(item.taskDate).getTime() <= getLastDayThisMonth.getTime())
             baseTasks = filterByParameter;
-
-            console.log({
-                last: getLastDayThisWeek,
-                first: getFirsttDayThisWeek,
-                today: today,
-                dayOfWeek: dayOfWeek,
-                dayOfWeekmenos: 7 - dayOfWeek,
-                filterByParameter: filterByParameter
-            })
-
         }
 
         tasksByCategory = createGroups(baseTasks, ["Daily", "Weekly", "Monthly"]);
@@ -107,7 +98,7 @@ export default function CadastrarTarefa() {
             <main className="flex-1 w-full flex flex-col items-center justify-start p-10 md:p-20 gap-y-4">
                 <section className="w-full flex flex-row items-center justify-end">
                     <section className="w-full md:w-12/12 flex flex-row items-center justify-between md:justify-end gap-4 flex-wrap">
-                        <section className="w-full md:w-2/12 flex flex-row items-start md:justify-between justify-end gap-2">
+                        <section className="w-full md:w-4/12 xl:w-2/12 flex flex-row items-start md:justify-between justify-end gap-2">
                             <span className=" flex flex-row items-center gap-2">
                                 <span className="w-2 h-2 rounded-[50%] bg-[#E53E3E]"></span>
                                 <span>High</span>
