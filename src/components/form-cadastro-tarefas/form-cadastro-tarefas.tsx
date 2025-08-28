@@ -39,13 +39,13 @@ export default function FormCadastroTarefas() {
         if (!nome && !urgencia && !grupo && !data) return;
 
         const dateInQuestion = new Date(data);
-        dateInQuestion.setDate(dateInQuestion.getDate() + 1);
+        //dateInQuestion.setDate(dateInQuestion.getDate() + 1);
 
         const taskArrToParam = [];
         const objToCreate: Task = {
             taskName: nome,
             taskStatus: 'Ativo',
-            taskDate: new Date(dateInQuestion).toISOString().split("T")[0],
+            taskDate: new Date(dateInQuestion).toISOString(),
             taskUrgency: urgencia,
             taskClassification: grupo,
             task_repeat: repeat

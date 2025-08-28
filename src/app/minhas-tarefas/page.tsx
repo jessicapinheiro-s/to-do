@@ -15,6 +15,7 @@ export default function CadastrarTarefa() {
     const { tasks } = useTaskStore();
     const [filterTask, setFilterTask] = useState<string>('All');
     const [viewTask, setViewTask] = useState<string>('View');
+    const [byNowTask, setByNowTask] = useState<string>('All');
     const [authProcessInit, setAuthProcessInit] = useState<boolean>(false);
 
     const createGroups = (arr: typeof tasks, types: string[]): ObjParam[] => {
@@ -30,7 +31,7 @@ export default function CadastrarTarefa() {
             await getAndUpdateStore();
         } catch (erro) {
             console.error('Erro ao mapear informações da base para o app, erro:', erro);
-        }finally{
+        } finally {
             setAuthProcessInit(false);
         }
     };
@@ -38,24 +39,49 @@ export default function CadastrarTarefa() {
     const optionsTOshow: ObjParam[] = useMemo(() => {
         let tasksByCategory: ObjParam[] = [];
         let baseTasks = tasks;
+        let filterByParameter: any[] = [];
 
         if (filterTask === "Completed") {
             baseTasks = baseTasks.filter(item => item.taskStatus === 'Inativo');
         }
 
         if (filterTask === "Delayed") {
-            console.log({
-                baseTasks: baseTasks.map(item => {
-                    return {
-                        ...item,
-                        taskDate: !(new Date(item.taskDate).getTime() < new Date().getTime()),
-                        taskDateReq: new Date(item.taskDate),
-                        utc: new Date().getTime(),
-                        data: item.taskDate
-                    }
-                }),
-            });
             baseTasks = baseTasks.filter(item => !(new Date(item.taskDate).getTime() < new Date().getTime()) && item.taskStatus === 'Ativo');
+        }
+
+
+        if (byNowTask === 'Today') {
+            filterByParameter = baseTasks.filter(item => item.taskDate === new Date().toISOString().split('T')[0])
+            baseTasks = filterByParameter;
+
+        } else if (byNowTask === 'This Week') {
+            const today: Date = new Date();
+            const dayOfWeek: number = new Date().getDay();
+            const getLastDayThisWeek: Date = new Date(today.setDate(today.getDate() + (6 - dayOfWeek)));
+            const getFirsttDayThisWeek: Date = new Date(new Date(getLastDayThisWeek).setDate(new Date(getLastDayThisWeek).getDate() - 6));
+
+            filterByParameter = baseTasks.filter(item => new Date(item.taskDate).getTime() > getFirsttDayThisWeek.getTime() && new Date(item.taskDate).getTime() < getLastDayThisWeek.getTime())
+            baseTasks = filterByParameter;
+
+        } else if (byNowTask === 'This Month') {
+            const today: Date = new Date();
+            const todayDay: number = new Date().getDate();;
+            const getLastDayThisWeek: Date = new Date(today.setDate(today.getDate() + 31));
+            const getFirsttDayThisWeek: Date = new Date(new Date(getLastDayThisWeek).setDate(new Date(getLastDayThisWeek).getDate() - 6));
+
+
+            filterByParameter = baseTasks.filter(item => new Date(item.taskDate).getTime() > getFirsttDayThisWeek.getTime() && new Date(item.taskDate).getTime() < getLastDayThisWeek.getTime())
+            baseTasks = filterByParameter;
+
+            console.log({
+                last: getLastDayThisWeek,
+                first: getFirsttDayThisWeek,
+                today: today,
+                dayOfWeek: dayOfWeek,
+                dayOfWeekmenos: 7 - dayOfWeek,
+                filterByParameter: filterByParameter
+            })
+
         }
 
         tasksByCategory = createGroups(baseTasks, ["Daily", "Weekly", "Monthly"]);
@@ -69,7 +95,7 @@ export default function CadastrarTarefa() {
 
         return tasksByCategory;
 
-    }, [filterTask, viewTask, tasks]);
+    }, [filterTask, viewTask, tasks, byNowTask]);
 
     useEffect(() => {
         getInitialData();
@@ -81,7 +107,7 @@ export default function CadastrarTarefa() {
             <main className="flex-1 w-full flex flex-col items-center justify-start p-10 md:p-20 gap-y-4">
                 <section className="w-full flex flex-row items-center justify-end">
                     <section className="w-full md:w-12/12 flex flex-row items-center justify-between md:justify-end gap-4 flex-wrap">
-                        <section className="w-full md:w-4/12 flex flex-row items-start md:justify-between justify-end gap-2">
+                        <section className="w-full md:w-2/12 flex flex-row items-start md:justify-between justify-end gap-2">
                             <span className=" flex flex-row items-center gap-2">
                                 <span className="w-2 h-2 rounded-[50%] bg-[#E53E3E]"></span>
                                 <span>High</span>
@@ -94,6 +120,19 @@ export default function CadastrarTarefa() {
                                 <span className="w-2 h-2 rounded-[50%] bg-[#38A169] "></span>
                                 <span>Low</span>
                             </span>
+                        </section>
+                        <section className="w-full md:w-2/12 ">
+                            <select
+                                value={byNowTask}
+                                onChange={(e) => setByNowTask(e.target.value)}
+                                className="w-full md: 4/12 border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                required
+                            >
+                                <option value="All">All</option>
+                                <option value="Today">Today</option>
+                                <option value="This Week">This Week</option>
+                                <option value="This Month">This Month</option>
+                            </select>
                         </section>
                         <section className="w-full md:w-2/12 ">
                             <select

@@ -7,7 +7,7 @@ export async function getAndUpdateStore() {
         const tasksMaped = data.map(task => {
             return {
                 ...task,
-                taskDate: new Date(task.taskDate).toLocaleDateString()
+                taskDate: task.taskDate
             }
         });
         useTaskStore.getState().addTasks(tasksMaped);
