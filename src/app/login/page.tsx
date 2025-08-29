@@ -5,7 +5,6 @@ import { authUser } from '@/app/login/actions';
 import LoadingModal from '@/components/modal/loanding-modal';
 import { useState } from 'react';
 import { useRouter } from "next/navigation";
-import { PiWarningCircle } from 'react-icons/pi';
 import ErrorMessages from '@/components/error-messages/error-messages';
 
 
@@ -16,7 +15,6 @@ export default function AuthPage() {
     const [password, setPassword] = useState<string>('');
     const [errorAuth, seterrorAuth] = useState<boolean>(false);
     const router = useRouter();
-    let messageError = 'Incorrect credentials';
 
     const userDataAuthProcess = async () => {
         const result = await authUser({ type: isLogin ? 'login' : 'cadastro', email: email, password: password });
@@ -92,7 +90,7 @@ export default function AuthPage() {
             </div>
             {
                 errorAuth && (
-                    <ErrorMessages message={messageError} />
+                    <ErrorMessages message='Incorrect credentials' />
                 )
             }
             <LoadingModal open={authProcessInit} />
