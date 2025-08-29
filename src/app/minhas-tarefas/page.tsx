@@ -39,7 +39,7 @@ export default function CadastrarTarefa() {
     const optionsTOshow: ObjParam[] = useMemo(() => {
         let tasksByCategory: ObjParam[] = [];
         let baseTasks = tasks;
-        let filterByParameter: any[] = [];
+        let filterByParameter = [];
 
         if (filterTask === "Completed") {
             baseTasks = baseTasks.filter(item => item.taskStatus === 'Inativo');

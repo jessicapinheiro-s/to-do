@@ -4,46 +4,51 @@
 import { authUser } from '@/app/login/actions';
 import LoadingModal from '@/components/modal/loanding-modal';
 import { useState } from 'react';
-//import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import { PiWarningCircle } from 'react-icons/pi';
+import ErrorMessages from '@/components/error-messages/error-messages';
 
 
 export default function AuthPage() {
     const [isLogin, setIsLogin] = useState(true);
     const [authProcessInit, setAuthProcessInit] = useState<boolean>(false);
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [password, setPassword] = useState<string>('');
     const [errorAuth, seterrorAuth] = useState<boolean>(false);
+    const router = useRouter();
+    let messageError = 'Incorrect credentials';
 
     const userDataAuthProcess = async () => {
         const result = await authUser({ type: isLogin ? 'login' : 'cadastro', email: email, password: password });
-
+        console.log(result);
         if (result?.code) {
             if (result?.code > 300) {
                 seterrorAuth(true)
             }
+        } else {
+            router.replace('/minha-conta');
         }
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
+        if (password.length < 6) return;
+
         setAuthProcessInit(true);
         e.preventDefault();
+
         try {
             await userDataAuthProcess();
-            setEmail('');
-            setPassword('');
-            redirect('/minha-conta');
-
-            //revalidatePath('/', 'layout');
         } catch (error) {
             throw new Error('Erro ao autenticar o usuário');
         } finally {
+            setEmail('');
+            setPassword('');
             setAuthProcessInit(false);
         }
     };
 
     return (
-        <div className="w-full flex items-center justify-center bg-gray-100">
+        <section className="w-full flex flex-col items-center justify-center gap-6">
             <div className="w-full max-w-md md:p-8 bg-white rounded-lg md:shadow-md">
                 <h1 className="text-2xl font-bold mb-6 text-center">
                     {isLogin ? 'Welcome back!' : 'Welcome!'}
@@ -65,7 +70,7 @@ export default function AuthPage() {
                         onChange={(e) => setPassword(e.target.value)}
                         className="border p-2 rounded-lg border-blue-600 outline-none"
                         required
-                        min={6}
+                        minLength={6}
                     />
                     <button
                         type="submit"
@@ -84,23 +89,13 @@ export default function AuthPage() {
                         {isLogin ? 'Register' : 'Login'}
                     </button>
                 </p>
-
-                {
-                    errorAuth && (
-                        <p className="mt-4 text-center text-sm text-gray-600">
-                            {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
-                            <button
-                                onClick={() => setIsLogin(!isLogin)}
-                                className="text-blue-600 hover:underline"
-                            >
-                                {isLogin ? 'Register' : 'Login'}
-                            </button>
-                        </p>
-                    )
-                }
-                <LoadingModal open={authProcessInit} />
-
             </div>
-        </div>
+            {
+                errorAuth && (
+                    <ErrorMessages message={messageError} />
+                )
+            }
+            <LoadingModal open={authProcessInit} />
+        </section>
     );
 }

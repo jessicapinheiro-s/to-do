@@ -53,7 +53,7 @@ export default function FormAccount({ user }: { user: User | null }) {
 
     useEffect(() => {
         getUserData();
-    }, [user, getUserData]);
+    }, [user]);
 
 
 
