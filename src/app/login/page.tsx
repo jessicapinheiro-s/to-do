@@ -18,7 +18,6 @@ export default function AuthPage() {
 
     const userDataAuthProcess = async () => {
         const result = await authUser({ type: isLogin ? 'login' : 'cadastro', email: email, password: password });
-        console.log(result);
         if (result?.code) {
             if (result?.code > 300) {
                 seterrorAuth(true)
