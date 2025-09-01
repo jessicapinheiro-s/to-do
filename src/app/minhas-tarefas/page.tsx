@@ -46,7 +46,17 @@ export default function CadastrarTarefa() {
         }
 
         if (filterTask === "Delayed") {
-            baseTasks = baseTasks.filter(item => !(new Date(item.taskDate).getTime() < new Date().getTime()) && item.taskStatus === 'Ativo');
+            baseTasks = baseTasks.filter(item => (new Date(item.taskDate).getTime() < new Date().getTime()) && item.taskStatus === 'Ativo');
+            console.log({
+                baseTasks: baseTasks.map(task =>{
+                    return {
+                        ...task,
+                        taskDate: new Date(task.taskDate),
+                        hoje: new Date()
+                    }
+                })
+
+            })
         }
 
 
