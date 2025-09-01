@@ -6,7 +6,6 @@ import { FaRegSave, FaRegUserCircle } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import { MdEdit } from "react-icons/md";
 import { useRouter } from 'next/navigation';
-import LoadingModal from "../modal/loanding-modal";
 import ModalNotificacao from "../modal/modal-notificacao";
 
 export default function FormAccount({ user }: { user: User | null }) {
@@ -18,7 +17,10 @@ export default function FormAccount({ user }: { user: User | null }) {
 
     const router = useRouter();
 
-
+    const userInfoFromDaraForCompare = {
+        userName: '',
+        name: ''
+    }
 
     const getUserData = useCallback(async () => {
         try {
@@ -31,6 +33,8 @@ export default function FormAccount({ user }: { user: User | null }) {
                     setUserName(data.username_website);
                 }
                 setUserEmail(user?.email ?? '');
+                userInfoFromDaraForCompare.name = data?.full_name;
+                userInfoFromDaraForCompare.userName = data?.username_website;
             }
         } catch (error) {
             throw new Error('Erro ao obter informações do usuário');
@@ -39,6 +43,8 @@ export default function FormAccount({ user }: { user: User | null }) {
 
     async function updateUserPersonalInfo() {
         if (!name || !userName || !userEmail) return;
+
+        if(userInfoFromDaraForCompare.userName === userName || userInfoFromDaraForCompare.name === name) 
 
         try {
             setOpenModalNotification(true)
@@ -54,8 +60,6 @@ export default function FormAccount({ user }: { user: User | null }) {
     useEffect(() => {
         getUserData();
     }, [user]);
-
-
 
 
     if (!user) return;
@@ -175,7 +179,7 @@ export default function FormAccount({ user }: { user: User | null }) {
                     </button>
                 </div>
             </form>
-            <ModalNotificacao title={'Information updated sucessfully!'} text={''} open={openModalNotification} onClose={() => setOpenModalNotification(false)} />
+            <ModalNotificacao title={'Information updated sucessfully!'} text={''} open={openModalNotification} onClose={() => setOpenModalNotification(false)}/>
         </div>
     )
 }
