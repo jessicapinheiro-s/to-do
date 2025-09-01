@@ -10,6 +10,7 @@ export default function FormCadastroTarefas() {
     const [urgencia, setUrgencia] = useState('');
     const [grupo, setGrupo] = useState('');
     const [data, setData] = useState('');
+    const [finalData, setFinalData] = useState('');
     const [repeat, setIfRepeat] = useState<boolean | undefined>();
     const [openModalNotification, setOpenModalNotification] = useState<boolean>(false);
 
@@ -39,7 +40,6 @@ export default function FormCadastroTarefas() {
         if (!nome && !urgencia && !grupo && !data) return;
 
         const dateInQuestion = new Date(data);
-        //dateInQuestion.setDate(dateInQuestion.getDate() + 1);
 
         const taskArrToParam = [];
         const objToCreate: Task = {
@@ -89,7 +89,27 @@ export default function FormCadastroTarefas() {
                 taskArrToParam.push(objToCreate);
             }
         } else {
-            taskArrToParam.push(objToCreate);
+            const initialDate = new Date(data).getTime();
+            const endDate = new Date(finalData).getTime();
+            console.log({
+                data: initialDate,
+                finalData: endDate
+            })
+
+            const diasTarefa = Math.round(Math.abs(endDate - initialDate) / (1000 * 60 * 60 * 24)) + 1;
+
+            if (repeat) {
+                for (let i = 0; i < diasTarefa; i++) {
+                    if (i !== 0) {
+                        dateInQuestion.setDate(dateInQuestion.getDate() + 1);
+                    }
+
+                    const dataAtualizada: Task = { ...objToCreate, taskDate: new Date(dateInQuestion).toISOString().split("T")[0] };
+                    taskArrToParam.push(dataAtualizada);
+                }
+            } else {
+                taskArrToParam.push(objToCreate);
+            }
         }
 
         await createTasks(taskArrToParam);
@@ -98,6 +118,7 @@ export default function FormCadastroTarefas() {
         setUrgencia('');
         setGrupo('');
         setData('');
+        setFinalData('');
         setIfRepeat(undefined);
         setOpenModalNotification(!openModalNotification)
     };
@@ -152,6 +173,13 @@ export default function FormCadastroTarefas() {
                     <option value="Monthly">Monthly</option>
                 </select>
 
+                {
+                    repeat && grupo === 'Daily' && (
+                        <label htmlFor="initialDate">Initial Date</label>
+
+                    )
+                }
+
                 <input
                     type="date"
                     value={data}
@@ -159,7 +187,28 @@ export default function FormCadastroTarefas() {
                     className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                     min={new Date().toISOString().split('T')[0]}
+                    name='initialDate'
+                    id='initialDate'
                 />
+
+                {
+                    repeat && grupo === 'Daily' && (
+                        <>
+                            <label htmlFor="finalDate">Final Date</label>
+                            <input
+                                type="date"
+                                value={finalData}
+                                onChange={(e) => setFinalData(e.target.value)}
+                                className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                required
+                                min={new Date().toISOString().split('T')[0]}
+                                placeholder='Final Date'
+                                name='finalDate'
+                                id='finalDate'
+                            />
+                        </>
+                    )
+                }
 
                 <button
                     type="button"
@@ -171,6 +220,6 @@ export default function FormCadastroTarefas() {
 
             </form>
             <ModalNotificacao title={'Task created sucessfully'} text={''} open={openModalNotification} onClose={() => setOpenModalNotification(false)} />
-        </div>
+        </div >
     );
 }
