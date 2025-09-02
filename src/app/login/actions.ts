@@ -1,5 +1,7 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
+import { Task, useTaskStore } from "../../../stores/tasks";
+import { useUserStore } from "../../../stores/user";
 
 interface propsAuth {
     type: string;
@@ -75,6 +77,7 @@ export async function register(props: { email: string, password: string }) {
 
 export const authUser = async (props: propsAuth) => {
     const { type, email, password } = props;
+    const { setUser } = useUserStore();
     let result = undefined;
 
     if (type === 'login') {
@@ -94,7 +97,9 @@ export const authUser = async (props: propsAuth) => {
         if (type !== 'login') {
             await createUserInProfiles(id)
         }
+        setUser(result.user)
 
     }
     return result;
 }
+

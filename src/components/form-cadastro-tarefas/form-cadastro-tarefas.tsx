@@ -4,40 +4,40 @@ import { useState } from 'react';
 import { Task } from '../../../stores/tasks';
 import ModalNotificacao from '../modal/modal-notificacao';
 import { supabase } from '@/utils/supabase/client';
+import { useUserStore } from '../../../stores/user';
 
 export default function FormCadastroTarefas() {
-    const [nome, setNome] = useState('');
-    const [urgencia, setUrgencia] = useState('');
-    const [grupo, setGrupo] = useState('');
-    const [data, setData] = useState('');
-    const [finalData, setFinalData] = useState('');
+    const [nome, setNome] = useState<string>('');
+    const [urgencia, setUrgencia] = useState<string>('');
+    const [grupo, setGrupo] = useState<string>('');
+    const [data, setData] = useState<string>('');
+    const [finalData, setFinalData] = useState<string>('');
     const [repeat, setIfRepeat] = useState<boolean | undefined>();
     const [openModalNotification, setOpenModalNotification] = useState<boolean>(false);
+    const { user } = useUserStore();
+    const handleNomeChange = (e: React.ChangeEvent<HTMLInputElement>) => setNome(e.target.value);
+    const handleUrgenciaChange = (e: React.ChangeEvent<HTMLSelectElement>) => setUrgencia(e.target.value);
+    const handleGroupChange = (e: React.ChangeEvent<HTMLSelectElement>) => setGrupo(e.target.value);
+    const handleRepeatChange = (e: React.ChangeEvent<HTMLSelectElement>) => setIfRepeat(e.target.value === 'Yes');
 
     const createTasks = async (tasks: Task[]) => {
-        const {
-            data: { user },
-        } = await (await supabase).auth.getUser();
-
         if (user?.id) {
-            await Promise.all(
-                tasks.map(async item => {
-                    const { error } = await supabase.from('tasks').insert({
-                        task_name: item.taskName,
-                        task_group: item.taskClassification,
-                        urgency_classification: item.taskUrgency,
-                        task_repeat: item.task_repeat,
-                        task_date: item.taskDate,
-                        user_id: user?.id,
-                    });
-                })
-            );
+            await supabase.from('tasks').insert(tasks.map(item => (
+                {
+                    task_name: item.taskName,
+                    task_group: item.taskClassification,
+                    urgency_classification: item.taskUrgency,
+                    task_repeat: item.task_repeat,
+                    task_date: item.taskDate,
+                    user_id: user?.id,
+                }
+            )));
         }
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!nome && !urgencia && !grupo && !data) return;
+        if (!nome || !urgencia || !grupo || !data) return;
 
         const dateInQuestion = new Date(data);
 
@@ -91,10 +91,6 @@ export default function FormCadastroTarefas() {
         } else {
             const initialDate = new Date(data).getTime();
             const endDate = new Date(finalData).getTime();
-            console.log({
-                data: initialDate,
-                finalData: endDate
-            })
 
             const diasTarefa = Math.round(Math.abs(endDate - initialDate) / (1000 * 60 * 60 * 24)) + 1;
 
@@ -133,7 +129,7 @@ export default function FormCadastroTarefas() {
                 </h1>
                 <input
                     value={nome}
-                    onChange={(e) => setNome(e.target.value)}
+                    onChange={handleNomeChange}
                     type="text"
                     required
                     className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -141,7 +137,7 @@ export default function FormCadastroTarefas() {
                 />
                 <select
                     value={repeat == undefined ? 'Repeat' : repeat ? 'Yes' : 'No'}
-                    onChange={(e) => setIfRepeat(e.target.value === 'Yes')}
+                    onChange={handleRepeatChange}
                     className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                 >
@@ -151,7 +147,7 @@ export default function FormCadastroTarefas() {
                 </select>
                 <select
                     value={urgencia}
-                    onChange={(e) => setUrgencia(e.target.value)}
+                    onChange={handleUrgenciaChange}
                     className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                 >
@@ -163,7 +159,7 @@ export default function FormCadastroTarefas() {
 
                 <select
                     value={grupo}
-                    onChange={(e) => setGrupo(e.target.value)}
+                    onChange={handleGroupChange}
                     className="border border-[#e0e0e0] rounded p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                     required
                 >

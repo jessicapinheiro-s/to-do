@@ -32,6 +32,7 @@ export default function AuthPage() {
                 if (result.erro?.status && result.erro?.status  >= 400) {
                     seterrorAuth(true)
                 }else if(result.user){
+                    //inserir userId na store
                     router.replace("/minha-conta");
                 }
             } 
