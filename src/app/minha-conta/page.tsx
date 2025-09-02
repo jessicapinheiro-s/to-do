@@ -1,12 +1,18 @@
 import FormAccount from "@/components/form-account/account-form";
 import Header from "@/components/header/header";
 import { createClient } from "@/utils/supabase/server"
+import { redirect } from 'next/navigation'
 
 export default async function MinhaConta() {
-    const supabase = createClient();
+    const supabase = await createClient();
+
     const {
         data: { user },
-    } = await (await supabase).auth.getUser();
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+        redirect('/');
+    }
 
     return (
         <div className="flex flex-col">
