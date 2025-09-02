@@ -77,7 +77,6 @@ export async function register(props: { email: string, password: string }) {
 
 export const authUser = async (props: propsAuth) => {
     const { type, email, password } = props;
-    const { setUser } = useUserStore();
     let result = undefined;
 
     if (type === 'login') {
@@ -97,7 +96,7 @@ export const authUser = async (props: propsAuth) => {
         if (type !== 'login') {
             await createUserInProfiles(id)
         }
-        setUser(result.user)
+        useUserStore.getState().setUser(result.user);
 
     }
     return result;
