@@ -1,8 +1,7 @@
 import { IoCheckmarkDoneCircleOutline } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
-import { Task, useTaskStore } from "../../../stores/tasks";
+import { Task } from "../../../stores/tasks";
 import { supabase } from "@/utils/supabase/client";
-import { mapInfoBaseToApp } from "@/utils/supabase/helpers";
 import { getAndUpdateStore } from "@/utils/task/helpers";
 import { useCallback } from "react";
 
