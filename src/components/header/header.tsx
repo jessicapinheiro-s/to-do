@@ -8,6 +8,10 @@ import { FiMenu, FiX } from "react-icons/fi"; // ícones de menu e fechar
 export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
 
+    const handleOpenMenu = () => setIsOpen(true);
+
+    const handleCloseMenu = () => setIsOpen(true);
+
     return (
         <header className="flex flex-row items-center justify-between border border-[#e0e0e0] px-6 md:px-20 py-5 relative">
             {/* Logo */}
@@ -40,7 +44,7 @@ export default function Header() {
             {/* Botão Mobile */}
             <button
                 className="md:hidden text-2xl"
-                onClick={() => setIsOpen(true)}
+                onClick={handleOpenMenu}
                 aria-label="Abrir menu"
             >
                 <FiMenu />
@@ -57,7 +61,7 @@ export default function Header() {
                         <SiTask className="text-blue-600 w-6 h-6" />
                         <h1 className="font-bold text-2xl">TO DO</h1>
                     </div>
-                    <button onClick={() => setIsOpen(false)} aria-label="Fechar menu">
+                    <button onClick={handleCloseMenu} aria-label="Fechar menu">
                         <FiX className="text-2xl" />
                     </button>
                 </div>
@@ -69,7 +73,7 @@ export default function Header() {
                             <Link
                                 href="./minhas-tarefas"
                                 className="hover:text-blue-600 transition font-semibold "
-                                onClick={() => setIsOpen(false)}
+                                onClick={handleCloseMenu}
                             >
                                 My Tasks
                             </Link>
@@ -78,7 +82,7 @@ export default function Header() {
                             <Link
                                 href="./cadastrar-tarefa"
                                 className="hover:text-blue-600 transition font-semibold "
-                                onClick={() => setIsOpen(false)}
+                                onClick={handleCloseMenu}
                             >
                                 Create new Task
                             </Link>
@@ -96,7 +100,7 @@ export default function Header() {
             {isOpen && (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-40 z-40"
-                    onClick={() => setIsOpen(false)}
+                    onClick={handleCloseMenu}
                 ></div>
             )}
         </header>
