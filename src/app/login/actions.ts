@@ -1,7 +1,5 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 interface propsAuth {
     type: string;
@@ -9,47 +7,94 @@ interface propsAuth {
     password: string;
 }
 
-export const authUser = async (props: propsAuth) => {
-
-    const { type, email, password } = props;
-
+export async function createUserInProfiles(id: string) {
     const supabase = await createClient();
+    try {
+        const { error: profileError } = await supabase.from('profiles').insert({
+            id,
+            full_name: '',
+            username_website: '',
+            avatar_url: ''
+        });
+        if (profileError) throw new Error(profileError.message)
+    } catch (error) {
+        console.error(error)
+    }
+}
 
-    const { data, error: authError } = type === 'login' ? await supabase.auth.signInWithPassword({
+export async function login(props: { email: string, password: string }) {
+    const supabase = await createClient();
+    const {
         email,
         password
-    }) :
-        await supabase.auth.signUp({
+    } = props;
+    try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+        });
+        
+        return error ? {
+            user: null,
+            erro: error
+        } : {
+            user: data.user
+        }
+
+    } catch (erro) {
+        console.error(erro);
+    }
+}
+
+export async function register(props: { email: string, password: string }) {
+    const supabase = await createClient();
+    const {
+        email,
+        password
+    } = props;
+    try {
+        const { data, error } = await supabase.auth.signUp({
             email,
             password
         });
 
-    if (authError) {
-        console.log('authError', authError);
-
-        if (authError.code !== 'invalid_credentials' && authError.code !== 'user_not_found') {
-            redirect('/error');
-        }
-
-        return {
-            message: authError.code,
-            code: authError.status
-        };
-
-    } else {
-        if (data.user) {
-            const { id } = data.user;
-
-            if (type !== 'login') {
-                const { error: profileError } = await supabase.from('profiles').insert({
-                    id,
-                    full_name: '',
-                    username_website: '',
-                    avatar_url: ''
-                });
-                if (profileError) throw new Error(profileError.message)
+        if (error) {
+            return {
+                user: null,
+                erro: error
+            }
+        } else {
+            return {
+                user: data.user
             }
         }
+    } catch (erro) {
+        console.error(erro);
+    }
+}
+
+export const authUser = async (props: propsAuth) => {
+    const { type, email, password } = props;
+    let result = undefined;
+
+    if (type === 'login') {
+        result = await login({
+            email: email, password: password
+        });
+    } else {
+        result = await register({
+            email: email, password: password
+        });
     }
 
+
+    if (result?.user) {
+        const id = result.user.id;
+
+        if (type !== 'login') {
+            await createUserInProfiles(id)
+        }
+
+    }
+    return result;
 }
