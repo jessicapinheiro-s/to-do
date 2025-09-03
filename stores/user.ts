@@ -1,12 +1,18 @@
 import { User } from "@supabase/supabase-js";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export type UserStore = {
     user: User | undefined;
-    setUser: (localUser: User) => void;
+    setUser: (userParam: User) => void;
 }
 
-export const useUserStore = create<UserStore>((set) => ({
-    user: undefined,
-    setUser: (localUser: User) => set({ user: localUser})
-}));
+export const useUserStore = create(
+    persist<UserStore>(
+        (set) => ({
+            user: undefined,
+            setUser: (userParam) => set({ user: userParam })
+        }),
+        { name: "user-storage" }
+    )
+);

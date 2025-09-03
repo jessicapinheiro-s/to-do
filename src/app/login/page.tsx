@@ -6,6 +6,7 @@ import LoadingModal from "@/components/modal/loanding-modal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ErrorMessages from "@/components/error-messages/error-messages";
+import { useUserStore } from "../../../stores/user";
 
 
 export default function AuthPage() {
@@ -15,13 +16,14 @@ export default function AuthPage() {
     const [password, setPassword] = useState<string>("");
     const [errorAuth, seterrorAuth] = useState<boolean>(false);
     const router = useRouter();
+    const { user, setUser } = useUserStore();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (password.length < 6) return;
         setAuthProcessInit(true);
-        
+
         const type = isLogin ? "login" : "cadastro";
 
         try {
@@ -29,13 +31,13 @@ export default function AuthPage() {
 
 
             if (result) {
-                if (result.erro?.status && result.erro?.status  >= 400) {
+                if (result.erro?.status && result.erro?.status >= 400) {
                     seterrorAuth(true)
-                }else if(result.user){
-                    //inserir userId na store
-                    router.replace("/minha-conta");
+                } else if (result.user) {
+                    setUser(result.user);
+                    await router.replace("/minha-conta");
                 }
-            } 
+            }
         } catch (error) {
             console.error(error);
         } finally {
@@ -71,7 +73,7 @@ export default function AuthPage() {
                         className="border p-2 rounded-lg border-blue-600 outline-none"
                         required
                         minLength={6}
-                        autoComplete={isLogin  ? "current-password" : "new-password"}
+                        autoComplete={isLogin ? "current-password" : "new-password"}
                     />
                     <button
                         type="submit"
