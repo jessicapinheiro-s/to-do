@@ -33,9 +33,14 @@ export default function AuthPage() {
                 if (result.erro) {
                     setErrorMessage(result.erro.message)
                     seterrorAuth(true)
-                } else if (result.user) {
-                    setUser(result.user);
-                    await router.replace("/minha-conta");
+                } else if (result.user.user) {
+                    if (result.user.session) {
+                        setUser(result?.user?.user);
+                        await router.replace("/minha-conta");
+                    }else{
+                        await router.replace("/confirmar-conta");
+                    }
+
                 }
             }
         } catch (error) {

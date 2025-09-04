@@ -38,7 +38,7 @@ export async function login(props: { email: string, password: string }) {
             user: null,
             erro: error
         } : {
-            user: data.user
+            user: data
         }
 
     } catch (erro) {
@@ -80,7 +80,7 @@ export async function register(props: { email: string, password: string }) {
                 }
             } else {
                 return {
-                    user: data.user
+                    user: data
                 }
             }
         }
@@ -108,7 +108,7 @@ export const authUser = async (props: propsAuth) => {
 
     if (result && result.user && !result.erro) {
 
-        const id = result?.user?.id;
+        const id = result?.user?.user?.id;
 
         if (id && type !== 'login') {
             await createUserInProfiles(id)
