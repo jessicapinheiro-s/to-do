@@ -76,7 +76,7 @@ export default function FormAccount({ user }: { user: User | null }) {
         const { error: errorLogout } = await supabase.auth.signOut();
 
         if (errorLogout) {
-            console.error('Erro ao deslogar');
+            console.error(errorLogout);
         }
         router.replace('/');
     }

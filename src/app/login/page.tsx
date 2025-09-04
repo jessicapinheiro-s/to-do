@@ -16,7 +16,8 @@ export default function AuthPage() {
     const [password, setPassword] = useState<string>("");
     const [errorAuth, seterrorAuth] = useState<boolean>(false);
     const router = useRouter();
-    const { user, setUser } = useUserStore();
+    const { setUser } = useUserStore();
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -28,10 +29,9 @@ export default function AuthPage() {
 
         try {
             const result = await authUser({ type: type, email: email, password: password });
-
-
             if (result) {
-                if (result.erro?.status && result.erro?.status >= 400) {
+                if (result.erro) {
+                    setErrorMessage(result.erro.message)
                     seterrorAuth(true)
                 } else if (result.user) {
                     setUser(result.user);
@@ -96,7 +96,7 @@ export default function AuthPage() {
             </div>
             {
                 errorAuth && (
-                    <ErrorMessages message="Incorrect credentials" />
+                    <ErrorMessages message={errorMessage} />
                 )
             }
             <LoadingModal open={authProcessInit} />

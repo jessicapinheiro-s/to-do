@@ -33,7 +33,7 @@ export async function login(props: { email: string, password: string }) {
             email,
             password
         });
-        
+
         return error ? {
             user: null,
             erro: error
@@ -53,21 +53,39 @@ export async function register(props: { email: string, password: string }) {
         password
     } = props;
     try {
-        const { data, error } = await supabase.auth.signUp({
+        const userExists = await login({
             email,
             password
         });
 
-        if (error) {
+        console.log('userExists', userExists);
+        if (userExists?.erro && !userExists?.user === null) {
             return {
                 user: null,
-                erro: error
+                erro: {
+                    message: 'User already exists'
+                }
             }
+
         } else {
-            return {
-                user: data.user
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password
+            });
+
+            if (error) {
+                return {
+                    user: null,
+                    erro: error
+                }
+            } else {
+                return {
+                    user: data.user
+                }
             }
         }
+
+
     } catch (erro) {
         console.error(erro);
     }
@@ -76,6 +94,7 @@ export async function register(props: { email: string, password: string }) {
 export const authUser = async (props: propsAuth) => {
     const { type, email, password } = props;
     let result = undefined;
+
     if (type === 'login') {
         result = await login({
             email: email, password: password
@@ -86,10 +105,12 @@ export const authUser = async (props: propsAuth) => {
         });
     }
 
-    if (result?.user) {
-        const id = result.user.id;
 
-        if (type !== 'login') {
+    if (result && result.user && !result.erro) {
+
+        const id = result?.user?.id;
+
+        if (id && type !== 'login') {
             await createUserInProfiles(id)
         }
     }
