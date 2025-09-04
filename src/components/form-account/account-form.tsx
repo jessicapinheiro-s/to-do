@@ -44,7 +44,7 @@ export default function FormAccount({ user }: { user: User | null }) {
     async function updateUserPersonalInfo() {
         if (!name || !userName || !userEmail) return;
 
-        if(userInfoFromDaraForCompare.userName === userName || userInfoFromDaraForCompare.name === name) 
+        if(userInfoFromDaraForCompare.userName === userName || userInfoFromDaraForCompare.name === name) return;
 
         try {
             setOpenModalNotification(true)
@@ -68,8 +68,8 @@ export default function FormAccount({ user }: { user: User | null }) {
         setOnEdit(true);
     }
 
-    const saveInfo = () => {
-        updateUserPersonalInfo();
+    const saveInfo = async () => {
+        await updateUserPersonalInfo();
     }
 
     const logout = async () => {
